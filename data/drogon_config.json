@@ -1,7 +1,7 @@
 {
 	"app": {
 		"document_root": "./www",
-		"home_page": "index.html",
+		"home_page": "",
 		"use_implicit_page": true,
 		"static_files_cache_time": 5,
 		"static_files_dirs": [

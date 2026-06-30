@@ -1,34 +1,77 @@
 
-const socket = new WebSocket("ws://localhost:8080/ws");
+const wsProtocol = window.location.protocol === "https:" ? "wss:" : "ws:";
+const wsUrl = `${wsProtocol}//${window.location.host}/ws`;
+
+const socket = new WebSocket(wsUrl);
 
 socket.addEventListener("open", () => {
-	console.log("WebSocket connected");
-	socket.send("Hello from browser");
+	socket.send(JSON.stringify({
+		op: "connect",
+		route_path: window.location.pathname,
+		query: window.location.search,
+		hash: window.location.hash
+	}));
 });
 
 socket.addEventListener("message", (event) => {
-	console.log("Message from server:", event.data);
+	const message = JSON.parse(event.data);
+
+	if( message.op === "create_element" ) CreateElement(message.parent_id, message.tag, message.id);
+	if(message.op === "set_text") SetText(message.id, message.text);
+	if(message.op === "set_on_click") SetOnClick(message.id);
 });
 
-socket.addEventListener("close", () => {
-	console.log("WebSocket closed");
-});
-
-socket.addEventListener("error", (error) => {
-	console.error("WebSocket error:", error);
-});
-
-function ButtonPressed()
+function CreateElement(parentId, tag, id)
 {
-	if(socket.readyState === WebSocket.OPEN)
+	const parent = document.getElementById(parentId);
+
+	if (parent === null)
 	{
-		socket.send("Button was clicked");
+		console.error("Parent not found:", parentId);
+		return;
 	}
-	else
-	{
-		console.log("WebSocket is not open");
-	}
+
+	const element = document.createElement(tag);
+	element.id = id;
+
+	parent.appendChild(element);
 }
 
-const button = document.getElementById("TestButton");
-button.onclick = ButtonPressed;
+function SetText(id, text)
+{
+	document.getElementById(id).textContent = text;
+}
+
+function AddClass(id, className)
+{
+	document.getElementById(id).classList.add(className);
+}
+
+function RemoveElement(id)
+{
+	document.getElementById(id)?.remove();
+}
+
+function SetOnClick(id)
+{
+	BindButton(id);
+}
+
+function BindButton(id)
+{
+	const button = document.getElementById(id);
+
+	if (button === null)
+	{
+		console.error("Button not found:", id);
+		return;
+	}
+
+	button.addEventListener("click", () =>
+	{
+		socket.send(JSON.stringify({
+			op: "button_clicked",
+			id: id
+		}));
+	});
+}
