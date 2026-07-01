@@ -17,20 +17,39 @@ ui::ClientUpdater::ClientUpdater(
 
 auto ui::ClientUpdater::CreateElement( std::string_view parent_id, std::string_view id, std::string_view tag ) -> void
 {
-	auto json = Json::Value{};
-	json[ "op" ] = "create_element";
-	json[ "id" ] = std::string{ id };
+	auto json = CreateJSONOp( "create_element", id );
 	json[ "parent_id" ] = std::string{ parent_id };
 	json[ "tag" ] = std::string{ tag };
 	SendJSON( json );
 }
 
 
+auto ui::ClientUpdater::RemoveElement( std::string_view id ) -> void
+{
+	SendJSON( CreateJSONOp( "remove_element", id ) );
+}
+
+
+auto ui::ClientUpdater::SetTag( std::string_view id, std::string_view tag ) -> void
+{
+	auto json = CreateJSONOp( "set_tag", id );
+	json[ "tag" ] = std::string{ tag };
+	SendJSON( json );
+}
+
+
+auto ui::ClientUpdater::SetAttribute( std::string_view id, std::string_view attribute, std::string_view attribute_value ) -> void
+{
+	auto json = CreateJSONOp( "set_attribute", id );
+	json[ "attribute" ] = std::string{ attribute };
+	json[ "attribute_value" ] = std::string{ attribute_value };
+	SendJSON( json );
+}
+
+
 auto ui::ClientUpdater::SetText( std::string_view id, std::string_view text ) -> void
 {
-	auto json = Json::Value{};
-	json[ "op" ] = "set_text";
-	json[ "id" ] = std::string{ id };
+	auto json = CreateJSONOp( "set_text", id );
 	json[ "text" ] = std::string{ text };
 	SendJSON( json );
 }
@@ -38,10 +57,28 @@ auto ui::ClientUpdater::SetText( std::string_view id, std::string_view text ) ->
 
 auto ui::ClientUpdater::SetOnClick( std::string_view id ) -> void
 {
+	SendJSON( CreateJSONOp( "set_on_click", id ) );
+}
+
+
+auto ui::ClientUpdater::SetOnChange( std::string_view id ) -> void
+{
+	SendJSON( CreateJSONOp( "set_on_change", id ) );
+}
+
+
+auto ui::ClientUpdater::SetOnSubmit( std::string_view id ) -> void
+{
+	SendJSON( CreateJSONOp( "set_on_submit", id ) );
+}
+
+
+auto ui::ClientUpdater::CreateJSONOp( std::string_view op, std::string_view id ) -> Json::Value
+{
 	auto json = Json::Value{};
-	json[ "op" ] = "set_on_click";
+	json[ "op" ] = std::string{ op };
 	json[ "id" ] = std::string{ id };
-	SendJSON( json );
+	return json;
 }
 
 
