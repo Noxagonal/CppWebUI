@@ -11,7 +11,9 @@ import UI.Utility;
 import UI.ClientConnection;
 import UI.App;
 
-import UI.DOM.Button;
+import UI.DOM.Clickable;
+import UI.DOM.Changeable;
+import UI.DOM.Submittable;
 
 
 export
@@ -55,7 +57,9 @@ public:
 		}
 
 		auto json = ui::ParseJson( message );
-		if( json[ "op" ] == "connect" )
+		auto json_op = json[ "op" ].asString();
+
+		if( json_op == "connect" )
 		{
 			// Handle new connection.
 			auto route_path = json[ "route_path" ].asString();
@@ -74,12 +78,27 @@ public:
 			return;
 		}
 
-		// not a connection type message,
-		if( json[ "op" ] == "button_clicked" )
+		if( json_op == "on_click" )
 		{
-			auto button_id = json[ "id" ].asString();
-			auto button = client_connection->client_dom_tree->FindElementById<ui::dom::Button>( button_id );
-			if( button ) button->on_click();
+			auto id = json[ "id" ].asString();
+			auto element = client_connection->client_dom_tree->FindElementById<ui::dom::Clickable>( id );
+			if( element ) element->InvokeOnClick();
+			return;
+		}
+
+		if( json_op == "on_change" )
+		{
+			auto id = json[ "id" ].asString();
+			auto element = client_connection->client_dom_tree->FindElementById<ui::dom::Changeable>( id );
+			if( element ) element->InvokeOnChange( json[ "value" ].asString() );
+			return;
+		}
+
+		if( json_op == "on_submit" )
+		{
+			auto id = json[ "id" ].asString();
+			auto element = client_connection->client_dom_tree->FindElementById<ui::dom::Submittable>( id );
+			if( element ) element->InvokeOnSubmit();
 			return;
 		}
 	}

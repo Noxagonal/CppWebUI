@@ -10,9 +10,15 @@ import UI.ClientDOMTree;
 import UI.ClientUpdater;
 import UI.Utility;
 
-import UI.DOM.Label;
-import UI.DOM.Container;
-import UI.DOM.Button;
+export import UI.DOM.Label;
+export import UI.DOM.Container;
+export import UI.DOM.Button;
+export import UI.DOM.Heading;
+export import UI.DOM.Paragraph;
+export import UI.DOM.Span;
+export import UI.DOM.Link;
+export import UI.DOM.Image;
+export import UI.DOM.HorizontalRule;
 
 
 namespace ui {
@@ -33,6 +39,12 @@ public:
 	auto Label( std::string_view text ) -> dom::Label&;
 	auto Container( std::function<void()>&& child_builder ) -> dom::Container&;
 	auto Button( std::string_view text, std::function<void()>&& on_click ) -> dom::Button&;
+	auto Heading( std::string_view text, dom::HeadingStyle style = dom::HeadingStyle::H1 ) -> dom::Heading&;
+	auto Paragraph( std::string_view text ) -> dom::Paragraph&;
+	auto Span( std::string_view text ) -> dom::Span&;
+	auto Link( std::string_view text, std::string_view link ) -> dom::Link&;
+	auto Image( std::string_view link ) -> dom::Image&;
+	auto HorizontalRule() -> dom::HorizontalRule&;
 
 private:
 	template<
