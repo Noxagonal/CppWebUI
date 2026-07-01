@@ -9,7 +9,7 @@ auto main() -> int
 	auto counter = 0;
 
 	app.RegisterPage("/", [&]( ui::PageBuilder& ui ){
-		auto& label1 = ui.Label( "Test" );
+		auto& label1 = ui.Heading( "Test" );
 
 		ui.Container( [&]{
 			ui.Label( "Test2" );
@@ -23,6 +23,7 @@ auto main() -> int
 				label1.text = "Clicked times: " + std::to_string( counter );
 			} );
 		} );
+		ui.HorizontalRule();
 	} );
 
 	app.Run();

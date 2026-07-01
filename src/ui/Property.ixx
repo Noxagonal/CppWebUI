@@ -14,6 +14,18 @@ class Property
 {
 public:
 
+	Property() = default;
+	Property( const T& in )
+	{
+		// Set initial value;
+		value = in;
+	}
+	explicit Property( const Property& ) = delete;
+	explicit Property( Property&& ) = default;
+
+	auto operator=( const Property& ) -> Property& = delete;
+	auto operator=( Property&& ) -> Property& = default;
+
 	auto OnGet( std::function<void()>&& callback ) -> void
 	{
 		on_get_callbacks.push_back( std::move( callback ) );
