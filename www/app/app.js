@@ -46,6 +46,9 @@ socket.addEventListener("message", (event) => {
 			SetText(message.id, message.text);
 			break;
 
+		case "set_modal_open":
+			SetModalOpen(message.id, message.open);
+
 		case "set_on_click":
 			SetOnClick(message.id);
 			break;
@@ -121,6 +124,33 @@ function SetAttribute(id, attribute, value)
 function SetText(id, text)
 {
 	document.getElementById(id).textContent = text;
+}
+
+
+function SetModalOpen(id, open)
+{
+	const element = document.getElementById(id);
+
+	if (!element) {
+		console.warn("SetModalOpen failed, element not found:", id);
+		return;
+	}
+
+	if (!(element instanceof HTMLDialogElement)) {
+		console.warn("SetModalOpen failed, element is not a dialog:", id);
+		return;
+	}
+
+	if (open) {
+		if (!element.open) {
+			element.showModal();
+		}
+	}
+	else {
+		if (element.open) {
+			element.close();
+		}
+	}
 }
 
 
