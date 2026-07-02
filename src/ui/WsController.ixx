@@ -73,7 +73,7 @@ public:
 			client_connection->page = page;
 
 			// Build initial page contents.
-			client_connection->page->page_builder_fn( *client_connection->page_builder );
+			client_connection->page->page_builder_fn( client_connection->page_builder.get() );
 
 			return;
 		}

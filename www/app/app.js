@@ -160,12 +160,6 @@ function AddClass(id, className)
 }
 
 
-function RemoveElement(id)
-{
-	document.getElementById(id)?.remove();
-}
-
-
 document.addEventListener("click", (event) => {
 	const element = event.target.closest("[data-ui-on-click]");
 
