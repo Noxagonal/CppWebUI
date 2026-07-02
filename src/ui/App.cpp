@@ -24,13 +24,13 @@ ui::App::~App()
 }
 
 
-auto ui::App::RegisterPage( std::string_view route_path, std::function<void( PageBuilder& ui )>&& page_builder ) -> void
+auto ui::App::RegisterPage( std::string_view route_path, std::function<void( PageBuilder* ui )>&& page_builder_fn ) -> void
 {
 	drogon::app().registerHandler(
 		std::string{ route_path },
 		[] (
 			const drogon::HttpRequestPtr& request,
-			std::function<void( const drogon::HttpResponsePtr& )>&& callback
+			std::function<void( const drogon::HttpResponsePtr& )>&& response_callback
 		)
 		{
 			// This entrypoint will only provide the browser with a template html. The path will
@@ -41,14 +41,14 @@ auto ui::App::RegisterPage( std::string_view route_path, std::function<void( Pag
 			response->setContentTypeCode( drogon::CT_TEXT_HTML );
 			response->setBody( std::move( html ) );
 
-			callback( response );
+			response_callback( response );
 		}
 	);
 
 	registered_page_list.push_back(
 		Page {
 			route_path,
-			std::move( page_builder )
+			std::move( page_builder_fn )
 		}
 	);
 }

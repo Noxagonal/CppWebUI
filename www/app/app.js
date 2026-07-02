@@ -46,6 +46,9 @@ socket.addEventListener("message", (event) => {
 			SetText(message.id, message.text);
 			break;
 
+		case "set_modal_open":
+			SetModalOpen(message.id, message.open);
+
 		case "set_on_click":
 			SetOnClick(message.id);
 			break;
@@ -124,15 +127,36 @@ function SetText(id, text)
 }
 
 
-function AddClass(id, className)
+function SetModalOpen(id, open)
 {
-	document.getElementById(id).classList.add(className);
+	const element = document.getElementById(id);
+
+	if (!element) {
+		console.warn("SetModalOpen failed, element not found:", id);
+		return;
+	}
+
+	if (!(element instanceof HTMLDialogElement)) {
+		console.warn("SetModalOpen failed, element is not a dialog:", id);
+		return;
+	}
+
+	if (open) {
+		if (!element.open) {
+			element.showModal();
+		}
+	}
+	else {
+		if (element.open) {
+			element.close();
+		}
+	}
 }
 
 
-function RemoveElement(id)
+function AddClass(id, className)
 {
-	document.getElementById(id)?.remove();
+	document.getElementById(id).classList.add(className);
 }
 
 

@@ -55,6 +55,14 @@ auto ui::ClientUpdater::SetText( std::string_view id, std::string_view text ) ->
 }
 
 
+auto ui::ClientUpdater::SetModalOpen( std::string_view id, bool open ) -> void
+{
+	auto json = CreateJSONOp( "set_modal_open", id );
+	json[ "open" ] = open;
+	SendJSON( json );
+}
+
+
 auto ui::ClientUpdater::SetOnClick( std::string_view id ) -> void
 {
 	SendJSON( CreateJSONOp( "set_on_click", id ) );

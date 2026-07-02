@@ -9,6 +9,8 @@ This project is experimental and currently intended for learning, prototyping, a
 ## Example
 
 ```cpp
+#include <string>
+
 import UI;
 
 auto main() -> int
@@ -17,22 +19,48 @@ auto main() -> int
 
 	auto counter = 0;
 
-	app.RegisterPage("/", [&]( ui::PageBuilder& ui ){
-		auto& label1 = ui.Label( "Test" );
+	app.RegisterPage("/", [&]( ui::PageBuilder* ui ){
+		auto* label1 = ui->Heading( "Test" );
 
-		ui.Container( [&]{
-			ui.Label( "Test2" );
-		} );
+		auto* modal = ui->Modal( [ui]( ui::dom::Modal* modal ){
+			ui->Header( [ui]{
+				ui->Paragraph( "This is header" );
+			} );
 
-		ui.Container( [&]{
-			ui.Button( "Click me!", [&]{
-				counter++;
+			ui->Paragraph( "This is body" );
 
-				// label1.text is a custom property type with getters and
-				// setters, so setting it updates the browser immediately.
-				label1.text = "Clicked times: " + std::to_string( counter );
+			ui->Footer( [ui, modal]{
+				ui->Paragraph( "This is footer" );
+
+				ui->Button( "Close", [modal]{
+					if( modal )
+					{
+						modal->open = false;
+					}
+				} );
 			} );
 		} );
+
+		ui->Container( [ui]{
+			ui->Label( "Test2" );
+		} );
+
+		ui->Container( [ui, label1, modal, &counter]{
+			ui->Button( "Click me!", [label1, modal, &counter]{
+				counter++;
+
+				// label1->text is a custom property type with getters and
+				// setters, so setting it updates the browser immediately.
+				label1->text = "Clicked times: " + std::to_string( counter );
+
+				if( modal )
+				{
+					modal->open = true;
+				}
+			} );
+		} );
+
+		ui->HorizontalRule();
 	} );
 
 	app.Run();
@@ -50,9 +78,9 @@ HTTP GET /
     -> server returns template.html
 
 Browser opens WebSocket
-    -> browser sends current path
+    -> browser sends current route path
 
-Server receives path
+Server receives route path
     -> server finds the registered page
     -> server builds the server-side DOM tree
     -> server sends DOM operations to the browser
@@ -73,10 +101,12 @@ This allows common UI behavior to be written in C++, without manually writing la
 * Drogon-based HTTP and WebSocket server
 * Server-side page registration
 * Server-side DOM tree representation
-* Basic DOM element creation
-* Basic text updates
+* Basic DOM element creation and deletion
+* Text and attribute updates
 * Button click events from browser to server
+* Change and submit event plumbing
 * Reactive-style property updates
+* Basic modal support
 * Static browser assets served from the `www` directory
 
 ## Current Architecture
@@ -88,21 +118,49 @@ The application is centered around `ui::App`.
 * loading the Drogon configuration
 * registering pages
 * starting the server
-* coordinating page creation
+* coordinating page creation and client connections
 
-A registered page looks like this:
+Pages are registered with a builder function:
 
 ```cpp
-app.RegisterPage("/", []( ui::PageBuilder& ui ){
-	ui.Label( "Hello" );
+app.RegisterPage( "/", []( ui::PageBuilder* ui ){
+	ui->Heading( "Hello" );
 
-	ui.Button( "Click me", []{
+	ui->Button( "Click me", []{
 		// server-side callback
 	} );
 } );
 ```
 
-The browser initially receives a template document. The actual UI is built after the WebSocket connection is established.
+Builder functions return pointers to server-side DOM elements. These elements are owned by the server-side DOM tree and are intended to have stable addresses for the lifetime of the client page.
+
+This makes it possible to capture element pointers in callbacks:
+
+```cpp
+app.RegisterPage( "/", []( ui::PageBuilder* ui ){
+	auto* label = ui->Label( "Waiting..." );
+
+	ui->Button( "Update", [label]{
+		label->text = "Updated from C++";
+	} );
+} );
+```
+
+Elements with child builders can optionally expose the parent element to the builder. This is useful for components such as modals:
+
+```cpp
+auto* modal = ui->Modal( [ui]( ui::dom::Modal* modal ){
+	ui->Paragraph( "Modal body" );
+
+	ui->Button( "Close", [modal]{
+		modal->open = false;
+	} );
+} );
+
+ui->Button( "Open modal", [modal]{
+	modal->open = true;
+} );
+```
 
 ## Browser Protocol
 
@@ -112,7 +170,7 @@ Example browser-to-server message:
 
 ```json
 {
-	"op": "button_clicked",
+	"op": "on_click",
 	"id": "button-uuid"
 }
 ```
@@ -132,9 +190,19 @@ Example text update:
 
 ```json
 {
-	"op": "update_text",
+	"op": "set_text",
 	"id": "label-uuid",
 	"text": "Clicked times: 1"
+}
+```
+
+Example modal update:
+
+```json
+{
+	"op": "set_modal_open",
+	"id": "modal-uuid",
+	"open": true
 }
 ```
 
@@ -162,9 +230,10 @@ Working so far:
 * serving an HTML template
 * opening a WebSocket connection
 * sending DOM creation messages to the browser
-* sending click events from browser to server
+* sending browser events back to the server
 * updating server-side UI state
-* pushing text updates back to the browser
+* pushing updates back to the browser
+* basic modal open and close behavior
 
 Still experimental:
 

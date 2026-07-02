@@ -27,6 +27,7 @@ public:
 	auto SetTag( std::string_view id, std::string_view tag ) -> void;
 	auto SetAttribute( std::string_view id, std::string_view attribute, std::string_view attribute_value ) -> void;
 	auto SetText( std::string_view id, std::string_view text ) -> void;
+	auto SetModalOpen( std::string_view id, bool open ) -> void;
 	auto SetOnClick( std::string_view id ) -> void;
 	auto SetOnChange( std::string_view id ) -> void;
 	auto SetOnSubmit( std::string_view id ) -> void;
