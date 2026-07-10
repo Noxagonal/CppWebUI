@@ -27,7 +27,7 @@ public:
 	auto operator=( const App& ) -> App& = delete;
 	auto operator=( App&& ) -> App& = default;
 
-	auto RegisterPage( std::string_view route_path, std::function<void( PageBuilder )>&& page_builder_fn ) -> void;
+	auto RegisterPage( std::string_view route_path, std::function<void( PageBuilder<dom::Element> )>&& page_builder_fn ) -> void;
 	auto FindRegisteredPage( std::string_view route_path ) -> Page*;
 
 	auto Run() -> void;

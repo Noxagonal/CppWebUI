@@ -1,5 +1,6 @@
 module;
 
+#include <concepts>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -30,6 +31,11 @@ public:
 	std::vector<std::unique_ptr<Element>> children;
 	Element* parent = nullptr;
 };
+
+
+export
+template<typename T>
+concept ElementDerived = std::derived_from<T, Element>;
 
 
 }

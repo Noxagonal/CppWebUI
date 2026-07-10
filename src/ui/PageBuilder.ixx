@@ -11,6 +11,7 @@ import UI.ClientDOMTree;
 import UI.ClientUpdater;
 import UI.Utility;
 
+export import UI.DOM.Element;
 export import UI.DOM.Label;
 export import UI.DOM.Container;
 export import UI.DOM.Button;
@@ -30,25 +31,181 @@ namespace ui {
 
 
 export
+template<dom::ElementDerived ElementT = dom::Element>
 class PageBuilder
 {
 public:
-	PageBuilder( PageBuilderCore& core, dom::Element* parent );
+	PageBuilder(
+		PageBuilderCore& core,
+		ElementT* parent
+	) :
+		core( &core ),
+		current_element( parent )
+	{};
 	PageBuilder( const PageBuilder& other ) = default;
 	~PageBuilder() = default;
 
 	auto operator=( const PageBuilder& other ) -> PageBuilder& = default;
 
-	auto Scope( dom::Element* new_parent ) const -> PageBuilder;
+	template<dom::ElementDerived NewParentScopeT = dom::Element>
+	auto Scope( NewParentScopeT* new_parent ) const -> PageBuilder<NewParentScopeT>
+	{
+		return PageBuilder<NewParentScopeT> { *core, new_parent };
+	}
 
-	auto Label( std::string_view text ) -> dom::Label*;
-	auto Button( std::string_view text, std::function<void()>&& on_click ) -> dom::Button*;
-	auto Heading( std::string_view text, dom::HeadingStyle style = dom::HeadingStyle::H1 ) -> dom::Heading*;
-	auto Paragraph( std::string_view text ) -> dom::Paragraph*;
-	auto Span( std::string_view text ) -> dom::Span*;
-	auto Link( std::string_view text, std::string_view link ) -> dom::Link*;
-	auto Image( std::string_view link ) -> dom::Image*;
-	auto HorizontalRule() -> dom::HorizontalRule*;
+	auto Label( std::string_view text ) -> dom::Label*
+	{
+		auto* new_element = AddChild<ui::dom::Label>( "label", {} );
+		auto* client_updater = core->GetClientUpdater();
+
+		new_element->text.OnSet(
+			[client_updater, new_element]( const std::string& in )
+			{
+				client_updater->SetText( new_element->id, in );
+			}
+		);
+
+		new_element->text = std::string{ text };
+
+		return new_element;
+	}
+
+	auto Button( std::string_view text, std::function<void()>&& on_click ) -> dom::Button*
+	{
+		auto* new_element = AddChild<ui::dom::Button>( "button", {} );
+		auto* client_updater = core->GetClientUpdater();
+
+		new_element->text.OnSet(
+			[client_updater, new_element]( const std::string& in )
+			{
+				client_updater->SetText( new_element->id, in );
+			}
+		);
+
+		new_element->text = std::string{ text };
+		new_element->on_click = std::move( on_click );
+
+		client_updater->SetOnClick( new_element->id );
+
+		return new_element;
+	}
+
+	auto Heading( std::string_view text, dom::HeadingStyle style = dom::HeadingStyle::H1 ) -> dom::Heading*
+	{
+		auto* new_element = AddChild<ui::dom::Heading>( HeadingStyleToTag( style ), {} );
+		auto* client_updater = core->GetClientUpdater();
+
+		new_element->text.OnSet(
+			[client_updater, new_element]( const std::string& in )
+			{
+				client_updater->SetText( new_element->id, in );
+			}
+		);
+
+		new_element->heading_style.OnSet(
+			[client_updater, new_element]( const dom::HeadingStyle& in )
+			{
+				client_updater->SetTag( new_element->id, HeadingStyleToTag( in ) );
+			}
+		);
+
+		new_element->text = std::string{ text };
+
+		return new_element;
+	}
+
+	auto Paragraph( std::string_view text ) -> dom::Paragraph*
+	{
+		auto* new_element = AddChild<ui::dom::Paragraph>( "p", {} );
+		auto* client_updater = core->GetClientUpdater();
+
+		new_element->text.OnSet(
+			[client_updater, new_element]( const std::string& in )
+			{
+				client_updater->SetText( new_element->id, in );
+			}
+		);
+
+		new_element->text = std::string{ text };
+
+		return new_element;
+	}
+
+	auto Span( std::string_view text ) -> dom::Span*
+	{
+		auto* new_element = AddChild<ui::dom::Span>( "span", {} );
+		auto* client_updater = core->GetClientUpdater();
+
+		new_element->text.OnSet(
+			[client_updater, new_element]( const std::string& in )
+			{
+				client_updater->SetText( new_element->id, in );
+			}
+		);
+
+		new_element->text = std::string{ text };
+
+		return new_element;
+	}
+
+
+	auto Link( std::string_view text, std::string_view link ) -> dom::Link*
+	{
+		auto* new_element = AddChild<ui::dom::Link>( "a", {} );
+		auto* client_updater = core->GetClientUpdater();
+
+		new_element->text.OnSet(
+			[client_updater, new_element]( const std::string& in )
+			{
+				client_updater->SetText( new_element->id, in );
+			}
+		);
+
+		new_element->href.OnSet(
+			[client_updater, new_element]( const std::string& in )
+			{
+				client_updater->SetAttribute( new_element->id, "href", in );
+			}
+		);
+
+		new_element->text = std::string{ text };
+		new_element->href = std::string{ link };
+
+		return new_element;
+	}
+
+
+	auto Image( std::string_view link ) -> dom::Image*
+	{
+		auto* new_element = AddChild<ui::dom::Image>( "img", {} );
+		auto* client_updater = core->GetClientUpdater();
+
+		new_element->src.OnSet(
+			[client_updater, new_element]( const std::string& in )
+			{
+				client_updater->SetAttribute( new_element->id, "src", in );
+			}
+		);
+
+		new_element->src = std::string{ link };
+
+		return new_element;
+	}
+
+
+	auto HorizontalRule() -> dom::HorizontalRule*
+	{
+		auto* new_element = AddChild<ui::dom::HorizontalRule>( "hr", {} );
+
+		return new_element;
+	}
+
+
+	auto GetParent() -> dom::Element*
+	{
+		if( current_element == nullptr ) throw std::runtime_error{ "Missing current element" };
+		return current_element;
+	}
 
 	template<typename ChildBuilderFn>
 	auto Container( ChildBuilderFn&& child_builder_fn ) -> dom::Container*
@@ -155,11 +312,20 @@ private:
 		}
 	}
 
-	auto GetParent() -> dom::Element*;
+	auto GetCurrent() -> ElementT*
+	{
+		return current_element;
+	}
+
+private:
 
 	PageBuilderCore* core = nullptr;
-	dom::Element* parent = nullptr;
+	ElementT* current_element = nullptr;
 };
+
+
+template<dom::ElementDerived ElementT>
+PageBuilder( ElementT& ) -> PageBuilder<ElementT>;
 
 
 }

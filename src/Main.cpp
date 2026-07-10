@@ -8,7 +8,7 @@ auto main() -> int
 
 	auto counter = 0;
 
-	app.RegisterPage("/", [&]( ui::PageBuilder ui ) {
+	app.RegisterPage("/", [&]( ui::PageBuilder<> ui ) {
 		auto* label1 = ui.Heading( "Test" );
 		label1->text = "test";
 
