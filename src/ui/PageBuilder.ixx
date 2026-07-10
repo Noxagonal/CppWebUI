@@ -288,34 +288,25 @@ private:
 	template<typename ParentT, typename ChildBuilderFn>
 	auto BuildChildren( ParentT* parent, ChildBuilderFn&& child_builder_fn ) -> void
 	{
-		BuildChildren( parent, parent, std::forward<ChildBuilderFn>( child_builder_fn ) );
-	}
-
-	template<typename ImmediateParentT, typename LogicalParentT, typename ChildBuilderFn>
-	auto BuildChildren( ImmediateParentT* immediate_parent, LogicalParentT* logical_parent, ChildBuilderFn&& child_builder_fn ) -> void
-	{
-		if constexpr( std::is_invocable_v<ChildBuilderFn, PageBuilder, LogicalParentT*> )
+		if constexpr( std::is_invocable_v<ChildBuilderFn, PageBuilder, ParentT*> )
 		{
-			std::invoke( std::forward<ChildBuilderFn>( child_builder_fn ), this->Scope( immediate_parent ), logical_parent );
+			std::invoke( std::forward<ChildBuilderFn>( child_builder_fn ), this->Scope( parent ), parent );
 		}
 		else if constexpr( std::is_invocable_v<ChildBuilderFn, PageBuilder> )
 		{
-			std::invoke( std::forward<ChildBuilderFn>( child_builder_fn ), this->Scope( immediate_parent ) );
+			std::invoke( std::forward<ChildBuilderFn>( child_builder_fn ), this->Scope( parent ) );
 		}
 		else
 		{
 			static_assert(
 				std::is_invocable_v<ChildBuilderFn, PageBuilder> ||
-				std::is_invocable_v<ChildBuilderFn, PageBuilder, LogicalParentT*>,
+				std::is_invocable_v<ChildBuilderFn, PageBuilder, ParentT*>,
 				"Child builder must be callable as fn() or fn(parent*)"
 			);
 		}
 	}
 
-	auto GetCurrent() -> ElementT*
-	{
-		return current_element;
-	}
+	auto GetCurrent() -> ElementT* { return current_element; }
 
 private:
 
