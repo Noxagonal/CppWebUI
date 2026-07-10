@@ -301,7 +301,7 @@ private:
 			static_assert(
 				std::is_invocable_v<ChildBuilderFn, PageBuilder> ||
 				std::is_invocable_v<ChildBuilderFn, PageBuilder, ParentT*>,
-				"Child builder must be callable as fn() or fn(parent*)"
+				"Child builder must be callable as fn(PageBuilder) or fn(PageBuilder, parent*)"
 			);
 		}
 	}
