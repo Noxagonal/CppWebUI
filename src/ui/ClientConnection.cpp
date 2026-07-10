@@ -12,5 +12,5 @@ ui::ClientConnection::ClientConnection(
 {
 	client_dom_tree = std::make_unique<ClientDOMTree>();
 	client_updater = std::make_unique<ClientUpdater>( ws_connection );
-	page_builder = std::make_unique<PageBuilder>( *client_dom_tree.get(), *client_updater.get() );
+	page_builder_core = std::make_unique<PageBuilderCore>( *client_dom_tree.get(), *client_updater.get() );
 }

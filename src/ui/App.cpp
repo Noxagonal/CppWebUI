@@ -24,7 +24,7 @@ ui::App::~App()
 }
 
 
-auto ui::App::RegisterPage( std::string_view route_path, std::function<void( PageBuilder* ui )>&& page_builder_fn ) -> void
+auto ui::App::RegisterPage( std::string_view route_path, std::function<void( PageBuilder )>&& page_builder_fn ) -> void
 {
 	drogon::app().registerHandler(
 		std::string{ route_path },

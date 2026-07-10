@@ -8,7 +8,7 @@ export module UI.ClientConnection;
 
 import UI.ClientDOMTree;
 import UI.ClientUpdater;
-import UI.PageBuilder;
+import UI.PageBuilderCore;
 import UI.Page;
 
 
@@ -32,7 +32,7 @@ public:
 	Page* page;
 	std::unique_ptr<ClientDOMTree> client_dom_tree;
 	std::unique_ptr<ClientUpdater> client_updater;
-	std::unique_ptr<PageBuilder> page_builder;
+	std::unique_ptr<PageBuilderCore> page_builder_core;
 };
 
 

@@ -6,6 +6,7 @@ module;
 
 export module UI.PageBuilder;
 
+import UI.PageBuilderCore;
 import UI.ClientDOMTree;
 import UI.ClientUpdater;
 import UI.Utility;
@@ -32,13 +33,13 @@ export
 class PageBuilder
 {
 public:
-	PageBuilder( ClientDOMTree& dom_tree, ClientUpdater& client_updater );
-	PageBuilder( const PageBuilder& ) = delete;
-	PageBuilder( PageBuilder&& ) = default;
+	PageBuilder( PageBuilderCore& core, dom::Element* parent );
+	PageBuilder( const PageBuilder& other ) = default;
 	~PageBuilder() = default;
 
-	auto operator=( const PageBuilder& ) -> PageBuilder& = delete;
-	auto operator=( PageBuilder&& ) -> PageBuilder& = default;
+	auto operator=( const PageBuilder& other ) -> PageBuilder& = default;
+
+	auto Scope( dom::Element* new_parent ) const -> PageBuilder;
 
 	auto Label( std::string_view text ) -> dom::Label*;
 	auto Button( std::string_view text, std::function<void()>&& on_click ) -> dom::Button*;
@@ -84,26 +85,20 @@ public:
 	template<typename ChildBuilderFn>
 	auto Modal( ChildBuilderFn&& child_builder_fn ) -> dom::Modal*
 	{
-		auto new_element = AddChild<ui::dom::Modal>( "dialog", {} );
+		auto* new_element = AddChild<ui::dom::Modal>( "dialog", {} );
+		auto* client_updater = core->GetClientUpdater();
 
 		new_element->open.OnSet(
-			[this, new_element]( const bool& in )
+			[client_updater, new_element]( const bool& in )
 			{
 				client_updater->SetModalOpen( new_element->id, in );
 			}
 		);
 
-		GoToChild( new_element );
-
-		Card( [this, new_element, &child_builder_fn]( dom::Card* card ){
-			BuildChildrenNoEnterScope( card, new_element, std::forward<ChildBuilderFn>( child_builder_fn ) );
-		} );
-
-		GoToParent();
+		BuildChildren( new_element, std::forward<ChildBuilderFn>( child_builder_fn ) );
 
 		return new_element;
 	}
-
 
 private:
 	template<
@@ -118,7 +113,7 @@ private:
 		auto new_element = std::make_unique<T>( std::forward<ArgsT>( args )... );
 		auto new_element_ptr = new_element.get();
 
-		auto* ce = GetCurrentElement();
+		auto* ce = GetParent();
 		ce->children.push_back( std::move( new_element ) );
 		new_element_ptr->id = std::string( "ui-" ) + ui::GenerateUUID();
 		new_element_ptr->tag = tag;
@@ -128,7 +123,7 @@ private:
 		auto parent_id = std::string{ ce->id };
 		if( parent_id.empty() ) parent_id = "root";
 
-		client_updater->CreateElement( parent_id, new_element_ptr->id, new_element_ptr->tag );
+		core->GetClientUpdater()->CreateElement( parent_id, new_element_ptr->id, new_element_ptr->tag );
 
 		return new_element_ptr;
 	}
@@ -139,43 +134,31 @@ private:
 		BuildChildren( parent, parent, std::forward<ChildBuilderFn>( child_builder_fn ) );
 	}
 
-	template<typename ImmediateParentT, typename ParentArgumentT, typename ChildBuilderFn>
-	auto BuildChildren( ImmediateParentT* immediate_parent, ParentArgumentT* parent_argument, ChildBuilderFn&& child_builder_fn ) -> void
+	template<typename ImmediateParentT, typename LogicalParentT, typename ChildBuilderFn>
+	auto BuildChildren( ImmediateParentT* immediate_parent, LogicalParentT* logical_parent, ChildBuilderFn&& child_builder_fn ) -> void
 	{
-		GoToChild( immediate_parent );
-		BuildChildrenNoEnterScope( immediate_parent, parent_argument, std::forward<ChildBuilderFn>( child_builder_fn ) );
-		GoToParent();
-	}
-
-	template<typename ImmediateParentT, typename ParentArgumentT, typename ChildBuilderFn>
-	auto BuildChildrenNoEnterScope( ImmediateParentT* immediate_parent, ParentArgumentT* parent_argument, ChildBuilderFn&& child_builder_fn ) -> void
-	{
-		if constexpr( std::is_invocable_v<ChildBuilderFn, ParentArgumentT*> )
+		if constexpr( std::is_invocable_v<ChildBuilderFn, PageBuilder, LogicalParentT*> )
 		{
-			std::invoke( std::forward<ChildBuilderFn>( child_builder_fn ), parent_argument );
+			std::invoke( std::forward<ChildBuilderFn>( child_builder_fn ), this->Scope( immediate_parent ), logical_parent );
 		}
-		else if constexpr( std::is_invocable_v<ChildBuilderFn> )
+		else if constexpr( std::is_invocable_v<ChildBuilderFn, PageBuilder> )
 		{
-			std::invoke( std::forward<ChildBuilderFn>( child_builder_fn ) );
+			std::invoke( std::forward<ChildBuilderFn>( child_builder_fn ), this->Scope( immediate_parent ) );
 		}
 		else
 		{
 			static_assert(
-				std::is_invocable_v<ChildBuilderFn> ||
-				std::is_invocable_v<ChildBuilderFn, ParentArgumentT*>,
+				std::is_invocable_v<ChildBuilderFn, PageBuilder> ||
+				std::is_invocable_v<ChildBuilderFn, PageBuilder, LogicalParentT*>,
 				"Child builder must be callable as fn() or fn(parent*)"
 			);
 		}
 	}
 
-	auto GetCurrentElement() -> dom::Element*;
+	auto GetParent() -> dom::Element*;
 
-	auto GoToChild( const dom::Element* child ) -> dom::Element*;
-	auto GoToParent() -> dom::Element*;
-
-	ClientDOMTree* dom_tree;
-	dom::Element* current_element = nullptr;
-	ClientUpdater* client_updater = nullptr;
+	PageBuilderCore* core = nullptr;
+	dom::Element* parent = nullptr;
 };
 
 

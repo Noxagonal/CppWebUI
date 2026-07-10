@@ -18,7 +18,7 @@ class Page
 public:
 	Page(
 		std::string_view route_path,
-		std::function<void( PageBuilder* ui )>&& page_builder_fn
+		std::function<void( PageBuilder )>&& page_builder_fn
 	);
 	Page( const Page& ) = delete;
 	Page( Page&& ) = default;
@@ -28,7 +28,7 @@ public:
 	auto operator=( Page&& ) -> Page& = default;
 
 	std::string route_path;
-	std::function<void( PageBuilder* ui )> page_builder_fn;
+	std::function<void( PageBuilder )> page_builder_fn;
 };
 
 

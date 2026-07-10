@@ -6,22 +6,28 @@ module;
 
 module UI.PageBuilder;
 
+import UI.PageBuilderCore;
 
-ui::PageBuilder::PageBuilder( ui::ClientDOMTree& dom_tree, ui::ClientUpdater& client_updater )
+
+ui::PageBuilder::PageBuilder( PageBuilderCore& core, dom::Element* parent ) :
+	core( &core ),
+	parent( parent )
+{}
+
+
+auto ui::PageBuilder::Scope( dom::Element* new_parent ) const -> ui::PageBuilder
 {
-	this->dom_tree = &dom_tree;
-	this->current_element = std::addressof( this->dom_tree->root );
-
-	this->client_updater = &client_updater;
+	return PageBuilder { *core, new_parent };
 }
 
 
 auto ui::PageBuilder::Label( std::string_view text ) -> ui::dom::Label*
 {
 	auto* new_element = AddChild<ui::dom::Label>( "label", {} );
+	auto* client_updater = core->GetClientUpdater();
 
 	new_element->text.OnSet(
-		[this, new_element]( const std::string& in )
+		[client_updater, new_element]( const std::string& in )
 		{
 			client_updater->SetText( new_element->id, in );
 		}
@@ -36,9 +42,10 @@ auto ui::PageBuilder::Label( std::string_view text ) -> ui::dom::Label*
 auto ui::PageBuilder::Button( std::string_view text, std::function<void()>&& on_click ) -> dom::Button*
 {
 	auto* new_element = AddChild<ui::dom::Button>( "button", {} );
+	auto* client_updater = core->GetClientUpdater();
 
 	new_element->text.OnSet(
-		[this, new_element]( const std::string& in )
+		[client_updater, new_element]( const std::string& in )
 		{
 			client_updater->SetText( new_element->id, in );
 		}
@@ -56,16 +63,17 @@ auto ui::PageBuilder::Button( std::string_view text, std::function<void()>&& on_
 auto ui::PageBuilder::Heading( std::string_view text, dom::HeadingStyle style ) -> dom::Heading*
 {
 	auto* new_element = AddChild<ui::dom::Heading>( HeadingStyleToTag( style ), {} );
+	auto* client_updater = core->GetClientUpdater();
 
 	new_element->text.OnSet(
-		[this, new_element]( const std::string& in )
+		[client_updater, new_element]( const std::string& in )
 		{
 			client_updater->SetText( new_element->id, in );
 		}
 	);
 
 	new_element->heading_style.OnSet(
-		[this, new_element]( const dom::HeadingStyle& in )
+		[client_updater, new_element]( const dom::HeadingStyle& in )
 		{
 			client_updater->SetTag( new_element->id, HeadingStyleToTag( in ) );
 		}
@@ -80,9 +88,10 @@ auto ui::PageBuilder::Heading( std::string_view text, dom::HeadingStyle style ) 
 auto ui::PageBuilder::Paragraph( std::string_view text ) -> dom::Paragraph*
 {
 	auto* new_element = AddChild<ui::dom::Paragraph>( "p", {} );
+	auto* client_updater = core->GetClientUpdater();
 
 	new_element->text.OnSet(
-		[this, new_element]( const std::string& in )
+		[client_updater, new_element]( const std::string& in )
 		{
 			client_updater->SetText( new_element->id, in );
 		}
@@ -97,9 +106,10 @@ auto ui::PageBuilder::Paragraph( std::string_view text ) -> dom::Paragraph*
 auto ui::PageBuilder::Span( std::string_view text ) -> dom::Span*
 {
 	auto* new_element = AddChild<ui::dom::Span>( "span", {} );
+	auto* client_updater = core->GetClientUpdater();
 
 	new_element->text.OnSet(
-		[this, new_element]( const std::string& in )
+		[client_updater, new_element]( const std::string& in )
 		{
 			client_updater->SetText( new_element->id, in );
 		}
@@ -114,16 +124,17 @@ auto ui::PageBuilder::Span( std::string_view text ) -> dom::Span*
 auto ui::PageBuilder::Link( std::string_view text, std::string_view link ) -> dom::Link*
 {
 	auto* new_element = AddChild<ui::dom::Link>( "a", {} );
+	auto* client_updater = core->GetClientUpdater();
 
 	new_element->text.OnSet(
-		[this, new_element]( const std::string& in )
+		[client_updater, new_element]( const std::string& in )
 		{
 			client_updater->SetText( new_element->id, in );
 		}
 	);
 
 	new_element->href.OnSet(
-		[this, new_element]( const std::string& in )
+		[client_updater, new_element]( const std::string& in )
 		{
 			client_updater->SetAttribute( new_element->id, "href", in );
 		}
@@ -139,9 +150,10 @@ auto ui::PageBuilder::Link( std::string_view text, std::string_view link ) -> do
 auto ui::PageBuilder::Image( std::string_view link ) -> dom::Image*
 {
 	auto* new_element = AddChild<ui::dom::Image>( "img", {} );
+	auto* client_updater = core->GetClientUpdater();
 
 	new_element->src.OnSet(
-		[this, new_element]( const std::string& in )
+		[client_updater, new_element]( const std::string& in )
 		{
 			client_updater->SetAttribute( new_element->id, "src", in );
 		}
@@ -161,32 +173,8 @@ auto ui::PageBuilder::HorizontalRule() -> dom::HorizontalRule*
 }
 
 
-auto ui::PageBuilder::GetCurrentElement() -> dom::Element*
+auto ui::PageBuilder::GetParent() -> dom::Element*
 {
-	if( current_element == nullptr ) throw std::runtime_error{ "Missing current element" };
-	return current_element;
-}
-
-
-auto ui::PageBuilder::GoToChild( const ui::dom::Element* child_element ) -> dom::Element*
-{
-	auto* elem = GetCurrentElement();
-	auto it = std::ranges::find_if( current_element->children, [ &child_element ]( auto& i ){
-		return i->id == child_element->id;
-	} );
-	if( it == current_element->children.end() ) throw std::runtime_error{ "Child not found" };
-	current_element = ( *it ).get();
-	return current_element;
-}
-
-
-auto ui::PageBuilder::GoToParent() -> dom::Element*
-{
-	if( current_element->parent == nullptr )
-	{
-		current_element = std::addressof( dom_tree->root );
-		return current_element;
-	}
-	current_element = current_element->parent;
-	return current_element;
+	if( parent == nullptr ) throw std::runtime_error{ "Missing current element" };
+	return parent;
 }
