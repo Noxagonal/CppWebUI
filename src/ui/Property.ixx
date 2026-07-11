@@ -1,5 +1,7 @@
 module;
 
+#include <string>
+#include <string_view>
 #include <functional>
 
 export module UI.Property;
@@ -15,12 +17,24 @@ class ReadOnlyProperty
 public:
 
 	ReadOnlyProperty() = default;
-	
+
 	// Initial setup allowed.
 	ReadOnlyProperty( const T& in )
 	{
 		// Set initial value;
 		this->value = in;
+	}
+
+	ReadOnlyProperty( std::string_view in ) requires( std::same_as<T, std::string> )
+	{
+		this->value = std::string{ in };
+	}
+
+	template<size_t StringLiteralLength>
+	ReadOnlyProperty( const char(&in)[ StringLiteralLength ] ) requires( std::same_as<T, std::string> )
+	{
+		static_assert( StringLiteralLength > 0 );
+		this->value = std::string{ in, StringLiteralLength - 1 };
 	}
 
 	explicit ReadOnlyProperty( const ReadOnlyProperty& ) = delete;
@@ -34,9 +48,35 @@ public:
 		this->on_get_callbacks.push_back( std::move( callback ) );
 	}
 
+	auto operator==( const T& other ) requires( !std::same_as<T, std::string> )
+	{
+		return this->value == other;
+	}
+
+	auto operator==( std::string_view other ) requires( std::same_as<T, std::string> )
+	{
+		return this->value == other;
+	}
+
+	auto operator->() -> const T requires( std::is_pointer_v<T> )
+	{
+		return this->value;
+	}
+
+	auto operator*() -> const T requires( std::is_pointer_v<T> )
+	{
+		return *this->value;
+	}
+
 	operator const T&()
 	{
-		for( auto& callback : this->on_get_callbacks ) callback();
+		this->RunGetCallbacks();
+		return this->value;
+	}
+
+	operator std::string_view() requires( std::same_as<T, std::string> )
+	{
+		this->RunGetCallbacks();
 		return this->value;
 	}
 
@@ -46,6 +86,11 @@ protected:
 	T value;
 
 private:
+	auto RunGetCallbacks() -> void
+	{
+		for( auto& callback : this->on_get_callbacks ) callback();
+	}
+
 	std::vector<std::function<void()>> on_get_callbacks;
 };
 
@@ -69,11 +114,16 @@ public:
 	auto operator=( const T& in )
 	{
 		this->value = in;
-		for( auto& callback : this->on_set_callbacks ) callback( in );
+		this->RunSetCallbacks( in );
 	}
 
 private:
-	std::vector<std::function<void(const T&)>> on_set_callbacks;
+	auto RunSetCallbacks( const T& in ) -> void
+	{
+		for( auto& callback : this->on_set_callbacks ) callback( in );
+	}
+
+	std::vector<std::function<void( const T& )>> on_set_callbacks;
 };
 
 
