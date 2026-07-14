@@ -36,8 +36,8 @@ public:
 		this->value = std::string{ in, StringLiteralLength - 1 };
 	}
 
-	explicit ReadOnlyProperty( const ReadOnlyProperty& ) = delete;
-	explicit ReadOnlyProperty( ReadOnlyProperty&& ) = default;
+	ReadOnlyProperty( const ReadOnlyProperty& ) = delete;
+	ReadOnlyProperty( ReadOnlyProperty&& ) = default;
 
 	auto operator=( const ReadOnlyProperty& ) -> ReadOnlyProperty& = delete;
 	auto operator=( ReadOnlyProperty&& ) -> ReadOnlyProperty& = default;
@@ -47,22 +47,22 @@ public:
 		this->on_get_callbacks.push_back( std::move( callback ) );
 	}
 
-	auto operator==( const T& other ) requires( !std::same_as<T, std::string> )
+	auto operator==( const T& other ) const -> bool requires( !std::same_as<T, std::string> )
 	{
 		return this->value == other;
 	}
 
-	auto operator==( std::string_view other ) requires( std::same_as<T, std::string> )
+	auto operator==( std::string_view other ) const -> bool requires( !std::same_as<T, std::string> )
 	{
 		return this->value == other;
 	}
 
-	auto operator->() -> const T requires( std::is_pointer_v<T> )
+	auto operator->() const -> const T requires( std::is_pointer_v<T> )
 	{
 		return this->value;
 	}
 
-	auto operator*() -> const T requires( std::is_pointer_v<T> )
+	auto operator*() const -> const T& requires( std::is_pointer_v<T> )
 	{
 		return *this->value;
 	}
@@ -79,7 +79,7 @@ public:
 		return this->value;
 	}
 
-	auto operator=( const T& in ) = delete;
+	auto operator=( const T& in ) -> ReadOnlyProperty& = delete;
 
 protected:
 	T value;
