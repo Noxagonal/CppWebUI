@@ -21,7 +21,6 @@ public:
 	// Initial setup allowed.
 	ReadOnlyProperty( const T& in )
 	{
-		// Set initial value;
 		this->value = in;
 	}
 
