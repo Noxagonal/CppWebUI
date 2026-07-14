@@ -110,16 +110,49 @@ public:
 		this->on_set_callbacks.push_back( std::move( callback ) );
 	}
 
-	auto operator=( const T& in )
+	auto operator->() -> T requires( std::is_pointer_v<T> )
+	{
+		return this->value;
+	}
+
+	auto operator*() -> T& requires( std::is_pointer_v<T> )
+	{
+		return *this->value;
+	}
+
+	operator T&()
+	{
+		this->RunGetCallbacks();
+		return this->value;
+	}
+
+	auto operator=( const T& in ) -> Property&
 	{
 		this->value = in;
-		this->RunSetCallbacks( in );
+		this->RunSetCallbacks();
+		return *this;
+	}
+
+	auto operator=( std::string_view in ) -> Property& requires( std::same_as<T, std::string> )
+	{
+		this->value = std::string{ in };
+		this->RunSetCallbacks();
+		return *this;
+	}
+
+	template<size_t StringLiteralLength>
+	auto operator=( const char(&in)[ StringLiteralLength ] ) -> Property& requires( std::same_as<T, std::string> )
+	{
+		static_assert( StringLiteralLength > 0 );
+		this->value = std::string{ in, StringLiteralLength - 1 };
+		this->RunSetCallbacks();
+		return *this;
 	}
 
 private:
-	auto RunSetCallbacks( const T& in ) -> void
+	auto RunSetCallbacks() -> void
 	{
-		for( auto& callback : this->on_set_callbacks ) callback( in );
+		for( auto& callback : this->on_set_callbacks ) callback( this->value );
 	}
 
 	std::vector<std::function<void( const T& )>> on_set_callbacks;
