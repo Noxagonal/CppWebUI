@@ -21,6 +21,15 @@ public:
 
 	using Element::Element;
 
+	inline Button(
+		std::string_view id,
+		Element* parent,
+		std::string_view text
+	) :
+		Element{ "button", id, parent },
+		text{ std::string{ text } }
+	{}
+
 	inline virtual auto InvokeOnClick() -> void override
 	{
 		if( on_click ) on_click();

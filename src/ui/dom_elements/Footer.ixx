@@ -1,6 +1,6 @@
 module;
 
-#include <string>
+#include <string_view>
 
 export module UI.DOM.Footer;
 
@@ -16,6 +16,13 @@ class Footer : public Element
 public:
 
 	using Element::Element;
+
+	inline Footer(
+		std::string_view id,
+		Element* parent
+	) :
+		Element{ "footer", id, parent }
+	{}
 };
 
 

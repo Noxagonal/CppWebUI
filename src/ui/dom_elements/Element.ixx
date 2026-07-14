@@ -2,11 +2,23 @@ module;
 
 #include <concepts>
 #include <string>
+#include <type_traits>
 #include <unordered_map>
 #include <vector>
 #include <memory>
 
 export module UI.DOM.Element;
+
+import UI.Property;
+
+/*
+namespace ui {
+
+class ClientDOMTree;
+class PageBuilder;
+
+}
+*/
 
 
 namespace ui::dom {
@@ -15,9 +27,23 @@ namespace ui::dom {
 export
 class Element
 {
+
+	// TODO: C++ modules currently prevent this.
+	//friend class ::ui::ClientDOMTree;
+	//friend class ::ui::PageBuilder;
+
 public:
 
-	Element() = default;
+	inline Element(
+		std::string_view tag,
+		std::string_view id,
+		Element* parent
+	) :
+		tag{ std::string{ tag } },
+		id{ std::string{ id } },
+		parent{ parent }
+	{}
+
 	Element( const Element& ) = delete;
 	Element( Element&& ) = default;
 	virtual ~Element() = default;
@@ -25,11 +51,36 @@ public:
 	auto operator=( const Element& ) -> Element& = delete;
 	auto operator=( Element&& ) -> Element& = default;
 
-	std::string id;
-	std::string tag;
+	auto GetChildren() -> const std::vector<std::unique_ptr<Element>>&
+	{
+		return children;
+	}
+
+	template<typename ChildT>
+	auto InsertChild( std::unique_ptr<ChildT>&& child ) -> void
+	{
+		static_assert( std::is_base_of_v<Element, ChildT>, "Child must be inherited from Element" );
+		children.push_back( std::move( child ) );
+	}
+
+	auto ClearChildren() -> void
+	{
+		children.clear();
+	}
+
+	auto GetAttributes() -> const std::unordered_map<std::string, std::string>&
+	{
+		return attributes;
+	}
+
+	ReadOnlyProperty<std::string> tag;
+	ReadOnlyProperty<std::string> id;
+	ReadOnlyProperty<Element*> parent;
+
+private:
+
 	std::unordered_map<std::string, std::string> attributes;
 	std::vector<std::unique_ptr<Element>> children;
-	Element* parent = nullptr;
 };
 
 

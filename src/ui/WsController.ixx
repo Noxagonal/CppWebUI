@@ -76,7 +76,7 @@ public:
 			// Build initial page contents.
 			auto page_builder = ui::PageBuilder{
 				*client_connection->page_builder_core,
-				client_connection->page_builder_core->GetRootElement()
+				*client_connection->page_builder_core->GetRootElement()
 			};
 			client_connection->page->page_builder_fn( page_builder );
 

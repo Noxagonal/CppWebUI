@@ -1,7 +1,7 @@
 module;
 
 #include <string>
-#include <functional>
+#include <string_view>
 
 export module UI.DOM.Image;
 
@@ -19,6 +19,15 @@ class Image : public Element
 public:
 
 	using Element::Element;
+
+	inline Image(
+		std::string_view id,
+		Element* parent,
+		std::string_view src
+	) :
+		Element{ "img", id, parent },
+		src{ std::string{ src } }
+	{}
 
 	ui::Property<std::string> src;
 };

@@ -1,13 +1,16 @@
 module;
 
-#include <string_view>
+#include <cassert>
 #include <functional>
 #include <memory>
+#include <string>
+#include <string_view>
+#include <type_traits>
+#include <utility>
 
 export module UI.PageBuilder;
 
 import UI.PageBuilderCore;
-import UI.ClientDOMTree;
 import UI.ClientUpdater;
 import UI.Utility;
 
@@ -37,286 +40,309 @@ class PageBuilder
 public:
 	PageBuilder(
 		PageBuilderCore& core,
-		ElementT* parent
+		ElementT& parent
 	) :
 		core( &core ),
-		current_element( parent )
-	{};
+		parent( &parent )
+	{}
 	PageBuilder( const PageBuilder& other ) = default;
 	~PageBuilder() = default;
 
 	auto operator=( const PageBuilder& other ) -> PageBuilder& = default;
 
 	template<dom::ElementDerived NewParentScopeT = dom::Element>
-	auto Scope( NewParentScopeT* new_parent ) const -> PageBuilder<NewParentScopeT>
+	auto Scope( NewParentScopeT& new_parent ) const -> PageBuilder<NewParentScopeT>
 	{
-		return PageBuilder<NewParentScopeT> { *core, new_parent };
-	}
-
-	auto Label( std::string_view text ) -> dom::Label*
-	{
-		auto* new_element = AddChild<ui::dom::Label>( "label", {} );
-		auto* client_updater = core->GetClientUpdater();
-
-		new_element->text.OnSet(
-			[client_updater, new_element]( const std::string& in )
-			{
-				client_updater->SetText( new_element->id, in );
-			}
-		);
-
-		new_element->text = std::string{ text };
-
-		return new_element;
-	}
-
-	auto Button( std::string_view text, std::function<void()>&& on_click ) -> dom::Button*
-	{
-		auto* new_element = AddChild<ui::dom::Button>( "button", {} );
-		auto* client_updater = core->GetClientUpdater();
-
-		new_element->text.OnSet(
-			[client_updater, new_element]( const std::string& in )
-			{
-				client_updater->SetText( new_element->id, in );
-			}
-		);
-
-		new_element->text = std::string{ text };
-		new_element->on_click = std::move( on_click );
-
-		client_updater->SetOnClick( new_element->id );
-
-		return new_element;
+		return { *core, new_parent };
 	}
 
 	auto Heading( std::string_view text, dom::HeadingStyle style = dom::HeadingStyle::H1 ) -> dom::Heading*
 	{
-		auto* new_element = AddChild<ui::dom::Heading>( HeadingStyleToTag( style ), {} );
-		auto* client_updater = core->GetClientUpdater();
-
-		new_element->text.OnSet(
-			[client_updater, new_element]( const std::string& in )
-			{
-				client_updater->SetText( new_element->id, in );
-			}
+		auto* new_element = AddChild<ui::dom::Heading>(
+			style,
+			text
 		);
 
-		new_element->heading_style.OnSet(
-			[client_updater, new_element]( const dom::HeadingStyle& in )
-			{
-				client_updater->SetTag( new_element->id, HeadingStyleToTag( in ) );
-			}
-		);
+		this->BindSetText( new_element, &new_element->text );
 
-		new_element->text = std::string{ text };
+		new_element->text = text;
+
+		return new_element;
+	}
+
+	auto Label( std::string_view text ) -> dom::Label*
+	{
+		auto* new_element = AddChild<ui::dom::Label>( text );
+
+		this->BindSetText( new_element, &new_element->text );
+
+		new_element->text = text;
+
+		return new_element;
+	}
+
+	auto Button( std::string_view text, std::function<void()> on_click ) -> dom::Button*
+	{
+		auto* new_element = AddChild<ui::dom::Button>( text );
+
+		this->BindSetText( new_element, &new_element->text );
+		this->BindEventOnClick( new_element );
+
+		new_element->text = text;
+		new_element->on_click = std::move( on_click );
 
 		return new_element;
 	}
 
 	auto Paragraph( std::string_view text ) -> dom::Paragraph*
 	{
-		auto* new_element = AddChild<ui::dom::Paragraph>( "p", {} );
-		auto* client_updater = core->GetClientUpdater();
+		auto* new_element = AddChild<ui::dom::Paragraph>( text );
 
-		new_element->text.OnSet(
-			[client_updater, new_element]( const std::string& in )
-			{
-				client_updater->SetText( new_element->id, in );
-			}
-		);
+		this->BindSetText( new_element, &new_element->text );
 
-		new_element->text = std::string{ text };
+		new_element->text = text;
 
 		return new_element;
 	}
 
 	auto Span( std::string_view text ) -> dom::Span*
 	{
-		auto* new_element = AddChild<ui::dom::Span>( "span", {} );
-		auto* client_updater = core->GetClientUpdater();
+		auto* new_element = AddChild<ui::dom::Span>( text );
 
-		new_element->text.OnSet(
-			[client_updater, new_element]( const std::string& in )
-			{
-				client_updater->SetText( new_element->id, in );
-			}
-		);
+		this->BindSetText( new_element, &new_element->text );
 
-		new_element->text = std::string{ text };
+		new_element->text = text;
 
 		return new_element;
 	}
 
-
-	auto Link( std::string_view text, std::string_view link ) -> dom::Link*
+	auto Link( std::string_view text, std::string_view href ) -> dom::Link*
 	{
-		auto* new_element = AddChild<ui::dom::Link>( "a", {} );
-		auto* client_updater = core->GetClientUpdater();
+		auto* new_element = AddChild<ui::dom::Link>( text, href );
 
-		new_element->text.OnSet(
-			[client_updater, new_element]( const std::string& in )
-			{
-				client_updater->SetText( new_element->id, in );
-			}
-		);
+		this->BindSetText( new_element, &new_element->text );
+		this->BindSetAttribute( new_element, &new_element->href, "href" );
 
-		new_element->href.OnSet(
-			[client_updater, new_element]( const std::string& in )
-			{
-				client_updater->SetAttribute( new_element->id, "href", in );
-			}
-		);
-
-		new_element->text = std::string{ text };
-		new_element->href = std::string{ link };
+		new_element->text = text;
+		new_element->href = href;
 
 		return new_element;
 	}
 
-
-	auto Image( std::string_view link ) -> dom::Image*
+	auto Image( std::string_view src ) -> dom::Image*
 	{
-		auto* new_element = AddChild<ui::dom::Image>( "img", {} );
-		auto* client_updater = core->GetClientUpdater();
+		auto* new_element = AddChild<ui::dom::Image>( src );
 
-		new_element->src.OnSet(
-			[client_updater, new_element]( const std::string& in )
-			{
-				client_updater->SetAttribute( new_element->id, "src", in );
-			}
-		);
+		this->BindSetAttribute( new_element, &new_element->src, "src" );
 
-		new_element->src = std::string{ link };
+		new_element->src = src;
 
 		return new_element;
 	}
-
 
 	auto HorizontalRule() -> dom::HorizontalRule*
 	{
-		auto* new_element = AddChild<ui::dom::HorizontalRule>( "hr", {} );
+		auto* new_element = AddChild<ui::dom::HorizontalRule>();
 
 		return new_element;
-	}
-
-
-	auto GetParent() -> dom::Element*
-	{
-		if( current_element == nullptr ) throw std::runtime_error{ "Missing current element" };
-		return current_element;
 	}
 
 	template<typename ChildBuilderFn>
 	auto Container( ChildBuilderFn&& child_builder_fn ) -> dom::Container*
 	{
-		auto* new_element = AddChild<ui::dom::Container>( "div", {} );
-		BuildChildren( new_element, std::forward<ChildBuilderFn>( child_builder_fn ) );
+		auto* new_element = AddChild<ui::dom::Container>();
+
+		this->BuildChildren( *new_element, std::forward<ChildBuilderFn>( child_builder_fn ) );
+
 		return new_element;
 	}
 
 	template<typename ChildBuilderFn>
 	auto Card( ChildBuilderFn&& child_builder_fn ) -> dom::Card*
 	{
-		auto* new_element = AddChild<ui::dom::Card>( "article", {} );
-		BuildChildren( new_element, std::forward<ChildBuilderFn>( child_builder_fn ) );
+		auto* new_element = AddChild<ui::dom::Card>();
+
+		this->BuildChildren( *new_element, std::forward<ChildBuilderFn>( child_builder_fn ) );
+
 		return new_element;
 	}
 
 	template<typename ChildBuilderFn>
 	auto Header( ChildBuilderFn&& child_builder_fn ) -> dom::Header*
 	{
-		auto* new_element = AddChild<ui::dom::Header>( "header", {} );
-		BuildChildren( new_element, std::forward<ChildBuilderFn>( child_builder_fn ) );
+		auto* new_element = AddChild<ui::dom::Header>();
+
+		this->BuildChildren( *new_element, std::forward<ChildBuilderFn>( child_builder_fn ) );
+
 		return new_element;
 	}
 
 	template<typename ChildBuilderFn>
 	auto Footer( ChildBuilderFn&& child_builder_fn ) -> dom::Footer*
 	{
-		auto* new_element = AddChild<ui::dom::Footer>( "footer", {} );
-		BuildChildren( new_element, std::forward<ChildBuilderFn>( child_builder_fn ) );
+		auto* new_element = AddChild<ui::dom::Footer>();
+
+		this->BuildChildren( *new_element, std::forward<ChildBuilderFn>( child_builder_fn ) );
+
 		return new_element;
 	}
 
 	template<typename ChildBuilderFn>
 	auto Modal( ChildBuilderFn&& child_builder_fn ) -> dom::Modal*
 	{
-		auto* new_element = AddChild<ui::dom::Modal>( "dialog", {} );
-		auto* client_updater = core->GetClientUpdater();
+		auto* new_element = AddChild<ui::dom::Modal>( false /* Closed by default */ );
 
-		new_element->open.OnSet(
-			[client_updater, new_element]( const bool& in )
-			{
-				client_updater->SetModalOpen( new_element->id, in );
-			}
-		);
+		this->BindSetModalOpen( new_element, &new_element->open );
 
-		BuildChildren( new_element, std::forward<ChildBuilderFn>( child_builder_fn ) );
+		this->BuildChildren( *new_element, std::forward<ChildBuilderFn>( child_builder_fn ) );
 
 		return new_element;
 	}
 
 private:
+
+	auto BindSetProperty(
+		dom::ElementDerived auto* element,
+		auto* property,
+		auto&& update_fn
+	) -> void
+	{
+		assert( element );
+		assert( property );
+
+		using UpdateFn = decltype( update_fn );
+
+		auto* client_updater = this->core->GetClientUpdater();
+		assert( client_updater );
+		auto element_id = std::string_view{ element->id };
+
+		property->OnSet( [client_updater, element_id = std::string{ element_id }, update_fn = std::forward<UpdateFn>( update_fn ) ]( const auto& value ) mutable {
+			std::invoke( update_fn, client_updater, element_id, value );
+		} );
+	}
+
+	auto BindSetText(
+		dom::ElementDerived auto* element,
+		auto* property
+	) -> void
+	{
+		BindSetProperty(
+			element,
+			property,
+			[]( ClientUpdater* updater, std::string_view id, std::string_view value ) {
+				updater->SetText( id, value );
+			}
+		);
+	}
+
+	auto BindSetAttribute(
+		dom::ElementDerived auto* element,
+		auto* property,
+		std::string_view attribute
+	) -> void
+	{
+		BindSetProperty(
+			element,
+			property,
+			[attribute = std::string{ attribute }]( ClientUpdater* updater, std::string_view id, std::string_view value ) {
+				updater->SetAttribute( id, attribute, value );
+			}
+		);
+	}
+
+	auto BindSetModalOpen(
+		dom::ElementDerived auto* element,
+		auto* property
+	) -> void
+	{
+		BindSetProperty(
+			element,
+			property,
+			[]( ClientUpdater* updater, std::string_view id, bool value ) {
+				updater->SetModalOpen( id, value );
+			}
+		);
+	}
+
+	auto BindEventOnClick( dom::ElementDerived auto* element ) -> void
+	{
+		assert( element );
+		auto* client_updater = this->core->GetClientUpdater();
+		assert( client_updater );
+		client_updater->SetOnClick( element->id );
+	}
+
 	template<
-		typename T,
+		dom::ElementDerived NewElementT,
 		typename ...ArgsT
 	>
 	auto AddChild(
-		std::string_view tag,
-		std::unordered_map<std::string, std::string> attributes,
-		ArgsT&& ...args ) -> T*
+		ArgsT&& ...args
+	) -> NewElementT*
 	{
-		auto new_element = std::make_unique<T>( std::forward<ArgsT>( args )... );
-		auto new_element_ptr = new_element.get();
+		auto* owning_parent = this->parent;
+		assert( owning_parent );
 
-		auto* ce = GetParent();
-		ce->children.push_back( std::move( new_element ) );
-		new_element_ptr->id = std::string( "ui-" ) + ui::GenerateUUID();
-		new_element_ptr->tag = tag;
-		new_element_ptr->attributes = attributes;
-		new_element_ptr->parent = ce;
+		auto new_element = std::make_unique<NewElementT>(
+			this->GenerateElementUUID(),
+			owning_parent,
+			std::forward<ArgsT>( args )...
+		);
+		auto* new_element_ptr = new_element.get();
 
-		auto parent_id = std::string{ ce->id };
-		if( parent_id.empty() ) parent_id = "root";
+		// TODO: Serialize and add initial values when creating a new element
+		// so we don't need to separately assign the properties after creation.
 
-		core->GetClientUpdater()->CreateElement( parent_id, new_element_ptr->id, new_element_ptr->tag );
+		owning_parent->InsertChild( std::move( new_element ) );
+
+		auto* client_updater = this->core->GetClientUpdater();
+		assert( client_updater );
+		client_updater->CreateElement(
+			owning_parent->id,
+			new_element_ptr->id,
+			new_element_ptr->tag
+		);
 
 		return new_element_ptr;
 	}
 
 	template<typename ParentT, typename ChildBuilderFn>
-	auto BuildChildren( ParentT* parent, ChildBuilderFn&& child_builder_fn ) -> void
+	auto BuildChildren( ParentT& parent, ChildBuilderFn&& child_builder_fn ) -> void
 	{
-		if constexpr( std::is_invocable_v<ChildBuilderFn, PageBuilder, ParentT*> )
+		using ScopedBuilderT = PageBuilder<ParentT>;
+		auto scoped_builder = this->Scope( parent );
+
+		if constexpr( std::is_invocable_v<ChildBuilderFn&&, ScopedBuilderT&, ParentT*> )
 		{
-			std::invoke( std::forward<ChildBuilderFn>( child_builder_fn ), this->Scope( parent ), parent );
+			std::invoke( std::forward<ChildBuilderFn>( child_builder_fn ), scoped_builder, &parent );
 		}
-		else if constexpr( std::is_invocable_v<ChildBuilderFn, PageBuilder> )
+		else if constexpr( std::is_invocable_v<ChildBuilderFn&&, ScopedBuilderT&> )
 		{
-			std::invoke( std::forward<ChildBuilderFn>( child_builder_fn ), this->Scope( parent ) );
+			std::invoke( std::forward<ChildBuilderFn>( child_builder_fn ), scoped_builder );
 		}
 		else
 		{
 			static_assert(
-				std::is_invocable_v<ChildBuilderFn, PageBuilder> ||
-				std::is_invocable_v<ChildBuilderFn, PageBuilder, ParentT*>,
-				"Child builder must be callable as fn(PageBuilder) or fn(PageBuilder, parent*)"
+				std::is_invocable_v<ChildBuilderFn&&, ScopedBuilderT&> ||
+				std::is_invocable_v<ChildBuilderFn&&, ScopedBuilderT&, ParentT*>,
+				"Child builder must be callable as fn(PageBuilder<ParentT>) or fn(PageBuilder<ParentT>, ParentT*)"
 			);
 		}
 	}
 
-	auto GetCurrent() -> ElementT* { return current_element; }
+	auto GetParent() const noexcept -> ElementT* { return parent; }
+	auto GetRoot() const noexcept -> dom::Element* { return core->GetRootElement(); }
 
 private:
 
+	auto GenerateElementUUID() const -> std::string
+	{
+		return std::string( "ui-" ) + ui::GenerateUUID();
+	}
+
 	PageBuilderCore* core = nullptr;
-	ElementT* current_element = nullptr;
+	ElementT* parent = nullptr;
 };
-
-
-template<dom::ElementDerived ElementT>
-PageBuilder( ElementT& ) -> PageBuilder<ElementT>;
 
 
 }

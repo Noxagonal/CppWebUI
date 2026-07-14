@@ -1,6 +1,6 @@
 module;
 
-#include <string>
+#include <string_view>
 
 export module UI.DOM.Container;
 
@@ -16,6 +16,13 @@ class Container : public Element
 public:
 
 	using Element::Element;
+
+	inline Container(
+		std::string_view id,
+		Element* parent
+	) :
+		Element{ "div", id, parent }
+	{}
 };
 
 

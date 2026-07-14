@@ -2,7 +2,6 @@ module;
 
 #include <string>
 #include <string_view>
-#include <functional>
 #include <stdexcept>
 
 export module UI.DOM.Heading;
@@ -57,8 +56,19 @@ public:
 
 	using Element::Element;
 
-	ui::Property<std::string> text;
-	ui::Property<HeadingStyle> heading_style = HeadingStyle::H1;
+	inline Heading(
+		std::string_view id,
+		Element* parent,
+		HeadingStyle heading_style,
+		std::string_view text
+	) :
+		Element{ HeadingStyleToTag( heading_style ), id, parent },
+		heading_style{ heading_style },
+		text{ std::string{ text } }
+	{}
+
+	Property<std::string> text;
+	ReadOnlyProperty<HeadingStyle> heading_style = HeadingStyle::H1;
 };
 
 
