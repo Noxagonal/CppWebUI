@@ -2,6 +2,8 @@ module;
 
 #include <drogon/WebSocketController.h>
 
+#include "PCH.hpp"
+
 export module UI.ClientUpdater;
 
 

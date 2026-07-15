@@ -1,5 +1,7 @@
 module;
 
+#include "PCH.hpp"
+
 export module UI.PageBuilderCore;
 
 import UI.ClientDOMTree;

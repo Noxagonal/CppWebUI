@@ -179,6 +179,11 @@ if(NOT "${_PRIVATE_MODULE_FILES}" STREQUAL "")
 	)
 endif()
 
+target_precompile_headers(${PROJECT_NAME}
+	PRIVATE
+		"${PROJECT_SOURCE_DIR}/src/ui/PCH.hpp"
+)
+
 target_link_libraries(${PROJECT_NAME}
 	PRIVATE
 		Drogon::Drogon

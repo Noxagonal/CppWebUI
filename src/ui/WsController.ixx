@@ -2,8 +2,7 @@ module;
 
 #include <drogon/WebSocketController.h>
 
-#include <vector>
-#include <mutex>
+#include "PCH.hpp"
 
 export module UI.WSController;
 

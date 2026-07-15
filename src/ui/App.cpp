@@ -3,6 +3,8 @@ module;
 #include <drogon/drogon.h>
 #include "drogon/HttpAppFramework.h"
 
+#include "PCH.hpp"
+
 module UI.App;
 
 import UI.Utility;

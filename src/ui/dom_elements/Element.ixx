@@ -1,11 +1,6 @@
 module;
 
-#include <concepts>
-#include <string>
-#include <type_traits>
-#include <unordered_map>
-#include <vector>
-#include <memory>
+#include "../PCH.hpp"
 
 export module UI.DOM.Element;
 

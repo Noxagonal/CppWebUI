@@ -2,6 +2,8 @@ module;
 
 #include <drogon/WebSocketConnection.h>
 
+#include "PCH.hpp"
+
 module UI.ClientConnection;
 
 

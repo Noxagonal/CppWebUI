@@ -1,12 +1,6 @@
 module;
 
-#include <string>
-#include <concepts>
-#include <cstddef>
-#include <type_traits>
-#include <utility>
-#include <vector>
-#include <functional>
+#include "PCH.hpp"
 
 export module UI.Property;
 
