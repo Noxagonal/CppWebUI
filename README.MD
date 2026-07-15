@@ -19,34 +19,37 @@ auto main() -> int
 
 	auto counter = 0;
 
-	app.RegisterPage("/", [&]( ui::PageBuilder* ui ){
-		auto* label1 = ui->Heading( "Test" );
+	app.RegisterPage("/", [&]( ui::PageBuilder<> ui ) {
+		auto* label1 = ui.Heading( "Test" );
+		label1->text = "test";
 
-		auto* modal = ui->Modal( [ui]( ui::dom::Modal* modal ){
-			ui->Header( [ui]{
-				ui->Paragraph( "This is header" );
-			} );
+		auto* modal = ui.Modal( []( auto ui, ui::dom::Modal* modal ) {
+			ui.Card( [modal]( auto ui ){
+				ui.Header( []( auto ui ){
+					ui.Paragraph( "This is header" );
+				} );
 
-			ui->Paragraph( "This is body" );
+				ui.Paragraph( "This is body" );
 
-			ui->Footer( [ui, modal]{
-				ui->Paragraph( "This is footer" );
+				ui.Footer( [modal]( auto ui ) {
+					ui.Paragraph( "This is footer" );
 
-				ui->Button( "Close", [modal]{
-					if( modal )
-					{
-						modal->open = false;
-					}
+					ui.Button( "Close", [modal]{
+						if( modal )
+						{
+							modal->open = false;
+						}
+					} );
 				} );
 			} );
 		} );
 
-		ui->Container( [ui]{
-			ui->Label( "Test2" );
+		ui.Container( []( auto ui ) {
+			ui.Label( "Test2" );
 		} );
 
-		ui->Container( [ui, label1, modal, &counter]{
-			ui->Button( "Click me!", [label1, modal, &counter]{
+		ui.Container( [label1, modal, &counter]( auto ui ) {
+			ui.Button( "Click me!", [label1, modal, &counter]{
 				counter++;
 
 				// label1->text is a custom property type with getters and
@@ -60,7 +63,7 @@ auto main() -> int
 			} );
 		} );
 
-		ui->HorizontalRule();
+		ui.HorizontalRule();
 	} );
 
 	app.Run();
@@ -101,12 +104,13 @@ This allows common UI behavior to be written in C++, without manually writing la
 * Drogon-based HTTP and WebSocket server
 * Server-side page registration
 * Server-side DOM tree representation
+* Lightweight scoped page builder handles
 * Basic DOM element creation and deletion
 * Text and attribute updates
 * Button click events from browser to server
 * Change and submit event plumbing
 * Reactive-style property updates
-* Basic modal support
+* Basic card and modal support
 * Static browser assets served from the `www` directory
 
 ## Current Architecture
@@ -123,24 +127,39 @@ The application is centered around `ui::App`.
 Pages are registered with a builder function:
 
 ```cpp
-app.RegisterPage( "/", []( ui::PageBuilder* ui ){
-	ui->Heading( "Hello" );
+app.RegisterPage( "/", []( ui::PageBuilder<> ui ){
+	ui.Heading( "Hello" );
 
-	ui->Button( "Click me", []{
+	ui.Button( "Click me", []{
 		// server-side callback
 	} );
 } );
 ```
+
+`ui::PageBuilder<>` is a lightweight scoped builder handle. It points to the underlying server-side page-building context and the current parent element.
+
+Child-builder functions receive their own scoped builder:
+
+```cpp
+ui.Container( []( auto ui ){
+	ui.Label( "Inside container" );
+	ui.Button( "Click", []{
+		// server-side callback
+	} );
+} );
+```
+
+This makes it possible to create elements inside the correct parent during the initial page build, and also allows scoped builders to be captured for later dynamic UI updates.
 
 Builder functions return pointers to server-side DOM elements. These elements are owned by the server-side DOM tree and are intended to have stable addresses for the lifetime of the client page.
 
 This makes it possible to capture element pointers in callbacks:
 
 ```cpp
-app.RegisterPage( "/", []( ui::PageBuilder* ui ){
-	auto* label = ui->Label( "Waiting..." );
+app.RegisterPage( "/", []( ui::PageBuilder<> ui ){
+	auto* label = ui.Label( "Waiting..." );
 
-	ui->Button( "Update", [label]{
+	ui.Button( "Update", [label]{
 		label->text = "Updated from C++";
 	} );
 } );
@@ -149,15 +168,17 @@ app.RegisterPage( "/", []( ui::PageBuilder* ui ){
 Elements with child builders can optionally expose the parent element to the builder. This is useful for components such as modals:
 
 ```cpp
-auto* modal = ui->Modal( [ui]( ui::dom::Modal* modal ){
-	ui->Paragraph( "Modal body" );
+auto* modal = ui.Modal( []( auto ui, ui::dom::Modal* modal ){
+	ui.Card( [modal]( auto ui ){
+		ui.Paragraph( "Modal body" );
 
-	ui->Button( "Close", [modal]{
-		modal->open = false;
+		ui.Button( "Close", [modal]{
+			modal->open = false;
+		} );
 	} );
 } );
 
-ui->Button( "Open modal", [modal]{
+ui.Button( "Open modal", [modal]{
 	modal->open = true;
 } );
 ```
@@ -234,6 +255,7 @@ Working so far:
 * updating server-side UI state
 * pushing updates back to the browser
 * basic modal open and close behavior
+* scoped child builders for nested UI construction
 
 Still experimental:
 

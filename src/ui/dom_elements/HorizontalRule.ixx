@@ -1,7 +1,6 @@
 module;
 
-#include <string>
-#include <functional>
+#include "../PCH.hpp"
 
 export module UI.DOM.HorizontalRule;
 
@@ -19,6 +18,13 @@ class HorizontalRule : public Element
 public:
 
 	using Element::Element;
+
+	inline HorizontalRule(
+		std::string_view id,
+		Element* parent
+	) :
+		Element{ "hr", id, parent }
+	{}
 };
 
 

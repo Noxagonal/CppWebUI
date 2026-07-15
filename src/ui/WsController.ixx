@@ -2,13 +2,13 @@ module;
 
 #include <drogon/WebSocketController.h>
 
-#include <vector>
-#include <mutex>
+#include "PCH.hpp"
 
 export module UI.WSController;
 
 import UI.Utility;
 import UI.ClientConnection;
+import UI.PageBuilder;
 import UI.App;
 
 import UI.DOM.Clickable;
@@ -73,7 +73,11 @@ public:
 			client_connection->page = page;
 
 			// Build initial page contents.
-			client_connection->page->page_builder_fn( client_connection->page_builder.get() );
+			auto page_builder = ui::PageBuilder{
+				*client_connection->page_builder_core,
+				*client_connection->page_builder_core->GetRootElement()
+			};
+			client_connection->page->page_builder_fn( page_builder );
 
 			return;
 		}

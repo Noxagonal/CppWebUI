@@ -1,6 +1,6 @@
 module;
 
-#include <string>
+#include "../PCH.hpp"
 
 export module UI.DOM.Modal;
 
@@ -19,7 +19,16 @@ public:
 
 	using Element::Element;
 
-	Property<bool> open = false;
+	inline Modal(
+		std::string_view id,
+		Element* parent,
+		bool open
+	) :
+		Element{ "dialog", id, parent },
+		open{ open }
+	{}
+
+	Property<bool> open;
 };
 
 

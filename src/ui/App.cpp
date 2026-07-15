@@ -3,9 +3,12 @@ module;
 #include <drogon/drogon.h>
 #include "drogon/HttpAppFramework.h"
 
+#include "PCH.hpp"
+
 module UI.App;
 
 import UI.Utility;
+import UI.DOM.Element;
 
 
 ui::App* global_app = nullptr;
@@ -24,7 +27,7 @@ ui::App::~App()
 }
 
 
-auto ui::App::RegisterPage( std::string_view route_path, std::function<void( PageBuilder* ui )>&& page_builder_fn ) -> void
+auto ui::App::RegisterPage( std::string_view route_path, std::function<void( PageBuilder<dom::Element> )>&& page_builder_fn ) -> void
 {
 	drogon::app().registerHandler(
 		std::string{ route_path },

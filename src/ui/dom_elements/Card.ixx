@@ -1,6 +1,6 @@
 module;
 
-#include <string>
+#include "../PCH.hpp"
 
 export module UI.DOM.Card;
 
@@ -16,6 +16,13 @@ class Card : public Element
 public:
 
 	using Element::Element;
+
+	inline Card(
+		std::string_view id,
+		Element* parent
+	) :
+		Element{ "article", id, parent }
+	{}
 };
 
 

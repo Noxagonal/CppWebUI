@@ -1,6 +1,6 @@
 module;
 
-#include <string>
+#include "../PCH.hpp"
 
 export module UI.DOM.Header;
 
@@ -16,6 +16,13 @@ class Header : public Element
 public:
 
 	using Element::Element;
+
+	inline Header(
+		std::string_view id,
+		Element* parent
+	) :
+		Element{ "header", id, parent }
+	{}
 };
 
 

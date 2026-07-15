@@ -3,6 +3,8 @@ module;
 #include <json/json.h>
 #include <drogon/WebSocketController.h>
 
+#include "PCH.hpp"
+
 module UI.ClientUpdater;
 
 import UI.Utility;

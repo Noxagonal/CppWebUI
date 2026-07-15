@@ -1,7 +1,6 @@
 module;
 
-#include <string>
-#include <functional>
+#include "../PCH.hpp"
 
 export module UI.DOM.Button;
 
@@ -20,6 +19,15 @@ class Button : public Element, public Clickable
 public:
 
 	using Element::Element;
+
+	inline Button(
+		std::string_view id,
+		Element* parent,
+		std::string_view text
+	) :
+		Element{ "button", id, parent },
+		text{ std::string{ text } }
+	{}
 
 	inline virtual auto InvokeOnClick() -> void override
 	{

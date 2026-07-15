@@ -1,7 +1,6 @@
 module;
 
-#include <string>
-#include <functional>
+#include "../PCH.hpp"
 
 export module UI.DOM.Span;
 
@@ -20,7 +19,16 @@ public:
 
 	using Element::Element;
 
-	Property<std::string> text = std::string{ "span" };
+	inline Span(
+		std::string_view id,
+		Element* parent,
+		std::string_view text
+	) :
+		Element{ "span", id, parent },
+		text( std::string{ text } )
+	{}
+
+	Property<std::string> text;
 };
 
 

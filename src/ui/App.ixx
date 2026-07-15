@@ -3,8 +3,7 @@ module;
 #include <drogon/drogon.h>
 #include "drogon/HttpAppFramework.h"
 
-#include <string_view>
-#include <functional>
+#include "PCH.hpp"
 
 export module UI.App;
 
@@ -27,7 +26,7 @@ public:
 	auto operator=( const App& ) -> App& = delete;
 	auto operator=( App&& ) -> App& = default;
 
-	auto RegisterPage( std::string_view route_path, std::function<void( PageBuilder* ui )>&& page_builder_fn ) -> void;
+	auto RegisterPage( std::string_view route_path, std::function<void( PageBuilder<dom::Element> )>&& page_builder_fn ) -> void;
 	auto FindRegisteredPage( std::string_view route_path ) -> Page*;
 
 	auto Run() -> void;

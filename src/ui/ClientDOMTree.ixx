@@ -1,7 +1,6 @@
 module;
 
-#include <string_view>
-#include <memory>
+#include "PCH.hpp"
 
 export module UI.ClientDOMTree;
 
@@ -29,7 +28,7 @@ public:
 		auto RecursiveSearch = [id](this auto& self, dom::Element& element) -> dom::Element*
 		{
 			if( element.id == id ) return &element;
-			for( auto& child : element.children )
+			for( auto& child : element.GetChildren() )
 			{
 				auto found = self( *child );
 				if( found ) return found;
