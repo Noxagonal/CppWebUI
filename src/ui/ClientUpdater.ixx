@@ -7,7 +7,7 @@ module;
 export module UI.ClientUpdater;
 
 
-namespace ui {
+namespace tatzel {
 
 
 export

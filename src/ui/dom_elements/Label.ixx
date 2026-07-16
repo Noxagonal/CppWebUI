@@ -9,7 +9,7 @@ export import UI.DOM.Element;
 import UI.Property;
 
 
-namespace ui::dom {
+namespace tatzel::dom {
 
 
 export
@@ -28,7 +28,7 @@ public:
 		text{ std::string{ text } }
 	{}
 
-	ui::Property<std::string> text;
+	Property<std::string> text;
 };
 
 

@@ -21,7 +21,7 @@ class WsController : public drogon::WebSocketController<WsController>
 {
 public:
 	static inline std::mutex mutex;
-	static inline std::vector<ui::ClientConnection> connections;
+	static inline std::vector<tatzel::ClientConnection> connections;
 
 	void handleNewConnection(
 		const drogon::HttpRequestPtr& request,
@@ -56,14 +56,14 @@ public:
 			return;
 		}
 
-		auto json = ui::ParseJson( message );
+		auto json = tatzel::ParseJson( message );
 		auto json_op = json[ "op" ].asString();
 
 		if( json_op == "connect" )
 		{
 			// Handle new connection.
 			auto route_path = json[ "route_path" ].asString();
-			auto* page = ui::GetGlobalApp().FindRegisteredPage( route_path );
+			auto* page = tatzel::GetGlobalApp().FindRegisteredPage( route_path );
 
 			if( page == nullptr )
 			{
@@ -73,7 +73,7 @@ public:
 			client_connection->page = page;
 
 			// Build initial page contents.
-			auto page_builder = ui::PageBuilder{
+			auto page_builder = tatzel::PageBuilder{
 				*client_connection->page_builder_core,
 				*client_connection->page_builder_core->GetRootElement()
 			};
@@ -85,7 +85,7 @@ public:
 		if( json_op == "on_click" )
 		{
 			auto id = json[ "id" ].asString();
-			auto element = client_connection->client_dom_tree->FindElementById<ui::dom::Clickable>( id );
+			auto element = client_connection->client_dom_tree->FindElementById<tatzel::dom::Clickable>( id );
 			if( element ) element->InvokeOnClick();
 			return;
 		}
@@ -93,7 +93,7 @@ public:
 		if( json_op == "on_change" )
 		{
 			auto id = json[ "id" ].asString();
-			auto element = client_connection->client_dom_tree->FindElementById<ui::dom::Changeable>( id );
+			auto element = client_connection->client_dom_tree->FindElementById<tatzel::dom::Changeable>( id );
 			if( element ) element->InvokeOnChange( json[ "value" ].asString() );
 			return;
 		}
@@ -101,7 +101,7 @@ public:
 		if( json_op == "on_submit" )
 		{
 			auto id = json[ "id" ].asString();
-			auto element = client_connection->client_dom_tree->FindElementById<ui::dom::Submittable>( id );
+			auto element = client_connection->client_dom_tree->FindElementById<tatzel::dom::Submittable>( id );
 			if( element ) element->InvokeOnSubmit();
 			return;
 		}
@@ -129,18 +129,18 @@ private:
 		connections.erase( it );
 	}
 
-	static auto CreateClientConnection( const drogon::WebSocketConnectionPtr& ws_connection ) -> ui::ClientConnection*
+	static auto CreateClientConnection( const drogon::WebSocketConnectionPtr& ws_connection ) -> tatzel::ClientConnection*
 	{
 		std::lock_guard lock( mutex );
 		connections.push_back(
-			ui::ClientConnection{
+			tatzel::ClientConnection{
 				ws_connection
 			}
 		);
 		return &connections.back();
 	}
 
-	static auto FindClientConnection( const drogon::WebSocketConnectionPtr& ws_connection ) -> ui::ClientConnection*
+	static auto FindClientConnection( const drogon::WebSocketConnectionPtr& ws_connection ) -> tatzel::ClientConnection*
 	{
 		std::lock_guard lock( mutex );
 		auto it = std::ranges::find_if( connections, [&ws_connection]( auto& c ){ return c.ws_connection == ws_connection; } );

@@ -10,14 +10,14 @@ module UI.ClientUpdater;
 import UI.Utility;
 
 
-ui::ClientUpdater::ClientUpdater(
+tatzel::ClientUpdater::ClientUpdater(
 	drogon::WebSocketConnectionPtr ws_connection
 ) :
 	ws_connection( ws_connection )
 {}
 
 
-auto ui::ClientUpdater::CreateElement( std::string_view parent_id, std::string_view id, std::string_view tag ) -> void
+auto tatzel::ClientUpdater::CreateElement( std::string_view parent_id, std::string_view id, std::string_view tag ) -> void
 {
 	auto json = CreateJSONOp( "create_element", id );
 	json[ "parent_id" ] = std::string{ parent_id };
@@ -26,13 +26,13 @@ auto ui::ClientUpdater::CreateElement( std::string_view parent_id, std::string_v
 }
 
 
-auto ui::ClientUpdater::RemoveElement( std::string_view id ) -> void
+auto tatzel::ClientUpdater::RemoveElement( std::string_view id ) -> void
 {
 	SendJSON( CreateJSONOp( "remove_element", id ) );
 }
 
 
-auto ui::ClientUpdater::SetTag( std::string_view id, std::string_view tag ) -> void
+auto tatzel::ClientUpdater::SetTag( std::string_view id, std::string_view tag ) -> void
 {
 	auto json = CreateJSONOp( "set_tag", id );
 	json[ "tag" ] = std::string{ tag };
@@ -40,7 +40,7 @@ auto ui::ClientUpdater::SetTag( std::string_view id, std::string_view tag ) -> v
 }
 
 
-auto ui::ClientUpdater::SetAttribute( std::string_view id, std::string_view attribute, std::string_view attribute_value ) -> void
+auto tatzel::ClientUpdater::SetAttribute( std::string_view id, std::string_view attribute, std::string_view attribute_value ) -> void
 {
 	auto json = CreateJSONOp( "set_attribute", id );
 	json[ "attribute" ] = std::string{ attribute };
@@ -49,7 +49,7 @@ auto ui::ClientUpdater::SetAttribute( std::string_view id, std::string_view attr
 }
 
 
-auto ui::ClientUpdater::SetText( std::string_view id, std::string_view text ) -> void
+auto tatzel::ClientUpdater::SetText( std::string_view id, std::string_view text ) -> void
 {
 	auto json = CreateJSONOp( "set_text", id );
 	json[ "text" ] = std::string{ text };
@@ -57,7 +57,7 @@ auto ui::ClientUpdater::SetText( std::string_view id, std::string_view text ) ->
 }
 
 
-auto ui::ClientUpdater::SetModalOpen( std::string_view id, bool open ) -> void
+auto tatzel::ClientUpdater::SetModalOpen( std::string_view id, bool open ) -> void
 {
 	auto json = CreateJSONOp( "set_modal_open", id );
 	json[ "open" ] = open;
@@ -65,25 +65,25 @@ auto ui::ClientUpdater::SetModalOpen( std::string_view id, bool open ) -> void
 }
 
 
-auto ui::ClientUpdater::SetOnClick( std::string_view id ) -> void
+auto tatzel::ClientUpdater::SetOnClick( std::string_view id ) -> void
 {
 	SendJSON( CreateJSONOp( "set_on_click", id ) );
 }
 
 
-auto ui::ClientUpdater::SetOnChange( std::string_view id ) -> void
+auto tatzel::ClientUpdater::SetOnChange( std::string_view id ) -> void
 {
 	SendJSON( CreateJSONOp( "set_on_change", id ) );
 }
 
 
-auto ui::ClientUpdater::SetOnSubmit( std::string_view id ) -> void
+auto tatzel::ClientUpdater::SetOnSubmit( std::string_view id ) -> void
 {
 	SendJSON( CreateJSONOp( "set_on_submit", id ) );
 }
 
 
-auto ui::ClientUpdater::CreateJSONOp( std::string_view op, std::string_view id ) -> Json::Value
+auto tatzel::ClientUpdater::CreateJSONOp( std::string_view op, std::string_view id ) -> Json::Value
 {
 	auto json = Json::Value{};
 	json[ "op" ] = std::string{ op };
@@ -92,7 +92,7 @@ auto ui::ClientUpdater::CreateJSONOp( std::string_view op, std::string_view id )
 }
 
 
-auto ui::ClientUpdater::SendJSON( const Json::Value& json ) -> void
+auto tatzel::ClientUpdater::SendJSON( const Json::Value& json ) -> void
 {
-	ws_connection->send( ui::JsonToString( json ) );
+	ws_connection->send( tatzel::JsonToString( json ) );
 }

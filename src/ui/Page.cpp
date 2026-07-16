@@ -7,7 +7,7 @@ module UI.Page;
 import UI.DOM.Element;
 
 
-ui::Page::Page(
+tatzel::Page::Page(
 	std::string_view route_path,
 	std::function<void( PageBuilder<dom::Element> )>&& page_builder_fn
 ) :

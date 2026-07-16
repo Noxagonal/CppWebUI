@@ -10,7 +10,7 @@ export import UI.DOM.Clickable;
 import UI.Property;
 
 
-namespace ui::dom {
+namespace tatzel::dom {
 
 
 export
@@ -34,7 +34,7 @@ public:
 		if( on_click ) on_click();
 	}
 
-	ui::Property<std::string> text = std::string{ "Button" };
+	Property<std::string> text = std::string{ "Button" };
 	std::function<void()> on_click;
 };
 

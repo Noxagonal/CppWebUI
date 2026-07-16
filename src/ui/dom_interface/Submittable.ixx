@@ -5,7 +5,7 @@ module;
 export module UI.DOM.Submittable;
 
 
-namespace ui::dom {
+namespace tatzel::dom {
 
 
 export

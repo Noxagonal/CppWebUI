@@ -7,7 +7,7 @@ module;
 export module UI.Utility;
 
 
-namespace ui {
+namespace tatzel {
 
 
 export

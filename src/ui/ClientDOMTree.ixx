@@ -7,7 +7,7 @@ export module UI.ClientDOMTree;
 import UI.DOM.Element;
 
 
-namespace ui {
+namespace tatzel {
 
 
 export

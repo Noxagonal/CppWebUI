@@ -11,23 +11,23 @@ import UI.Utility;
 import UI.DOM.Element;
 
 
-ui::App* global_app = nullptr;
+tatzel::App* global_app = nullptr;
 
 
-ui::App::App()
+tatzel::App::App()
 {
 	drogon::app().loadConfigFile( "./data/drogon_config.json" );
 	if( global_app ) throw std::runtime_error{ "Global app already exists" };
 	global_app = this;
 }
 
-ui::App::~App()
+tatzel::App::~App()
 {
 	global_app = nullptr;
 }
 
 
-auto ui::App::RegisterPage( std::string_view route_path, std::function<void( PageBuilder<dom::Element> )>&& page_builder_fn ) -> void
+auto tatzel::App::RegisterPage( std::string_view route_path, std::function<void( PageBuilder<dom::Element> )>&& page_builder_fn ) -> void
 {
 	drogon::app().registerHandler(
 		std::string{ route_path },
@@ -38,7 +38,7 @@ auto ui::App::RegisterPage( std::string_view route_path, std::function<void( Pag
 		{
 			// This entrypoint will only provide the browser with a template html. The path will
 			// handled later when the websockets connection has been established by the browser.
-			auto html = ui::GetTemplateDocument( "./data/template.html" );
+			auto html = tatzel::GetTemplateDocument( "./data/template.html" );
 
 			auto response = drogon::HttpResponse::newHttpResponse();
 			response->setContentTypeCode( drogon::CT_TEXT_HTML );
@@ -57,7 +57,7 @@ auto ui::App::RegisterPage( std::string_view route_path, std::function<void( Pag
 }
 
 
-auto ui::App::FindRegisteredPage( std::string_view route_path ) -> Page*
+auto tatzel::App::FindRegisteredPage( std::string_view route_path ) -> Page*
 {
 	auto it = std::ranges::find_if( registered_page_list, [route_path]( auto& p )
 	{
@@ -68,7 +68,7 @@ auto ui::App::FindRegisteredPage( std::string_view route_path ) -> Page*
 }
 
 
-auto ui::App::Run() -> void
+auto tatzel::App::Run() -> void
 {
 	drogon::app()
 		.addListener("0.0.0.0", 8080)
@@ -76,7 +76,7 @@ auto ui::App::Run() -> void
 }
 
 
-auto ui::GetGlobalApp() -> App&
+auto tatzel::GetGlobalApp() -> App&
 {
 	if( !global_app ) throw std::runtime_error{ "Global app instance not running" };
 	return *global_app;

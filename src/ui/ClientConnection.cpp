@@ -7,7 +7,7 @@ module;
 module UI.ClientConnection;
 
 
-ui::ClientConnection::ClientConnection(
+tatzel::ClientConnection::ClientConnection(
 	drogon::WebSocketConnectionPtr ws_connection
 ) :
 	ws_connection( ws_connection )

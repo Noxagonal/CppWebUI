@@ -4,15 +4,15 @@ import UI;
 
 auto main() -> int
 {
-	auto app = ui::App{};
+	auto app = tatzel::App{};
 
 	auto counter = 0;
 
-	app.RegisterPage("/", [&]( ui::PageBuilder<> ui ) {
+	app.RegisterPage("/", [&]( tatzel::PageBuilder<> ui ) {
 		auto* label1 = ui.Heading( "Test" );
 		label1->text = "test";
 
-		auto* modal = ui.Modal( []( auto ui, ui::dom::Modal* modal ) {
+		auto* modal = ui.Modal( []( auto ui, tatzel::dom::Modal* modal ) {
 			ui.Card( [modal]( auto ui ){
 				ui.Header( []( auto ui ){
 					ui.Paragraph( "This is header" );

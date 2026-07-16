@@ -7,7 +7,7 @@ export module UI.DOM.Element;
 import UI.Property;
 
 /*
-namespace ui {
+namespace tatzel {
 
 class ClientDOMTree;
 class PageBuilder;
@@ -16,7 +16,7 @@ class PageBuilder;
 */
 
 
-namespace ui::dom {
+namespace tatzel::dom {
 
 
 export
@@ -24,8 +24,8 @@ class Element
 {
 
 	// TODO: C++ modules currently prevent this.
-	//friend class ::ui::ClientDOMTree;
-	//friend class ::ui::PageBuilder;
+	//friend class ::tatzel::ClientDOMTree;
+	//friend class ::tatzel::PageBuilder;
 
 public:
 

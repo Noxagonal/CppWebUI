@@ -5,7 +5,7 @@ module;
 export module UI.DOM.Changeable;
 
 
-namespace ui::dom {
+namespace tatzel::dom {
 
 
 export

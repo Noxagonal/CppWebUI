@@ -8,9 +8,9 @@ import UI.ClientConnection;
 
 
 
-ui::ClientDOMTree::ClientDOMTree() :
+tatzel::ClientDOMTree::ClientDOMTree() :
 	root{ "main", "root", nullptr }
 {}
 
-ui::ClientDOMTree::~ClientDOMTree()
+tatzel::ClientDOMTree::~ClientDOMTree()
 {}
