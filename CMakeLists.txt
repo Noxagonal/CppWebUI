@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 4.0)
 
-project(CppWebUI LANGUAGES CXX)
+project(Tatzel LANGUAGES CXX)
 
 
 # Helper to collect files by extension

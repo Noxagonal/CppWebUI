@@ -8,7 +8,7 @@ module;
 module UI.Utility;
 
 
-auto ui::GetTemplateDocument( std::filesystem::path path ) -> std::string
+auto tatzel::GetTemplateDocument( std::filesystem::path path ) -> std::string
 {
 	if( !std::filesystem::is_regular_file( path ) ) throw std::runtime_error{ "Template file does not exist" };
 
@@ -28,7 +28,7 @@ auto ui::GetTemplateDocument( std::filesystem::path path ) -> std::string
 }
 
 
-auto ui::ParseJson( std::string_view text ) -> Json::Value
+auto tatzel::ParseJson( std::string_view text ) -> Json::Value
 {
 	Json::CharReaderBuilder builder;
 	Json::Value root;
@@ -49,7 +49,7 @@ auto ui::ParseJson( std::string_view text ) -> Json::Value
 }
 
 
-auto ui::JsonToString( const Json::Value& json ) -> std::string
+auto tatzel::JsonToString( const Json::Value& json ) -> std::string
 {
 	Json::StreamWriterBuilder writer;
 	writer[ "indentation" ] = ""; // compact JSON, no pretty-printing
@@ -58,7 +58,7 @@ auto ui::JsonToString( const Json::Value& json ) -> std::string
 }
 
 
-auto ui::GenerateUUID() -> std::string
+auto tatzel::GenerateUUID() -> std::string
 {
 	return drogon::utils::getUuid();
 }

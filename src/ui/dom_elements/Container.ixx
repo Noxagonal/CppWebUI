@@ -7,7 +7,7 @@ export module UI.DOM.Container;
 export import UI.DOM.Element;
 
 
-namespace ui::dom {
+namespace tatzel::dom {
 
 
 export

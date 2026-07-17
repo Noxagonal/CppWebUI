@@ -1,7 +1,7 @@
 {
-  "name": "cppwebui",
+  "name": "tatzel",
   "version": "1.0.0",
-  "description": "CppWebUI is a proof-of-concept C++ server-driven web UI framework inspired by projects like NiceGUI.",
+  "description": "Tatzel is a proof-of-concept C++ server-driven web UI framework inspired by projects like NiceGUI.",
   "main": "index.js",
   "scripts": {
     "build": "tsc -p .",
@@ -11,15 +11,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Noxagonal/CppWebUI.git"
+    "url": "git+https://github.com/Noxagonal/Tatzel.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Noxagonal/CppWebUI/issues"
+    "url": "https://github.com/Noxagonal/Tatzel/issues"
   },
-  "homepage": "https://github.com/Noxagonal/CppWebUI#readme",
+  "homepage": "https://github.com/Noxagonal/Tatzel#readme",
   "devDependencies": {
     "typescript": "^7.0.2"
   }

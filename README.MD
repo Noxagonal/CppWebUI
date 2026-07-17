@@ -1,6 +1,12 @@
-# CppWebUI
+<p align="center">
+	<picture>
+		<img src="assets/LogoReadme.svg" alt="Tatzel logo" width="160">
+	</picture>
+</p>
 
-CppWebUI is a proof-of-concept C++ server-driven web UI framework inspired by projects like NiceGUI.
+<h1 align="center">Tatzel</h1>
+
+Tatzel is a proof-of-concept C++ server-driven web UI framework inspired by projects like NiceGUI.
 
 The goal is to let a C++ application define a browser-based interface directly from C++ code. The server owns the UI state, while the browser acts as a lightweight display and input layer connected through WebSockets.
 
@@ -15,15 +21,15 @@ import UI;
 
 auto main() -> int
 {
-	auto app = ui::App{};
+	auto app = tatzel::App{};
 
 	auto counter = 0;
 
-	app.RegisterPage("/", [&]( ui::PageBuilder<> ui ) {
+	app.RegisterPage("/", [&]( tatzel::PageBuilder<> ui ) {
 		auto* label1 = ui.Heading( "Test" );
 		label1->text = "test";
 
-		auto* modal = ui.Modal( []( auto ui, ui::dom::Modal* modal ) {
+		auto* modal = ui.Modal( []( auto ui, tatzel::dom::Modal* modal ) {
 			ui.Card( [modal]( auto ui ){
 				ui.Header( []( auto ui ){
 					ui.Paragraph( "This is header" );
@@ -74,7 +80,7 @@ auto main() -> int
 
 ## Concept
 
-CppWebUI uses a server-driven UI model:
+Tatzel uses a server-driven UI model:
 
 ```text
 HTTP GET /
@@ -115,9 +121,9 @@ This allows common UI behavior to be written in C++, without manually writing la
 
 ## Current Architecture
 
-The application is centered around `ui::App`.
+The application is centered around `tatzel::App`.
 
-`ui::App` is responsible for:
+`tatzel::App` is responsible for:
 
 * loading the Drogon configuration
 * registering pages
@@ -127,7 +133,7 @@ The application is centered around `ui::App`.
 Pages are registered with a builder function:
 
 ```cpp
-app.RegisterPage( "/", []( ui::PageBuilder<> ui ){
+app.RegisterPage( "/", []( tatzel::PageBuilder<> ui ){
 	ui.Heading( "Hello" );
 
 	ui.Button( "Click me", []{
@@ -136,7 +142,7 @@ app.RegisterPage( "/", []( ui::PageBuilder<> ui ){
 } );
 ```
 
-`ui::PageBuilder<>` is a lightweight scoped builder handle. It points to the underlying server-side page-building context and the current parent element.
+`tatzel::PageBuilder<>` is a lightweight scoped builder handle. It points to the underlying server-side page-building context and the current parent element.
 
 Child-builder functions receive their own scoped builder:
 
@@ -156,7 +162,7 @@ Builder functions return pointers to server-side DOM elements. These elements ar
 This makes it possible to capture element pointers in callbacks:
 
 ```cpp
-app.RegisterPage( "/", []( ui::PageBuilder<> ui ){
+app.RegisterPage( "/", []( tatzel::PageBuilder<> ui ){
 	auto* label = ui.Label( "Waiting..." );
 
 	ui.Button( "Update", [label]{
@@ -168,7 +174,7 @@ app.RegisterPage( "/", []( ui::PageBuilder<> ui ){
 Elements with child builders can optionally expose the parent element to the builder. This is useful for components such as modals:
 
 ```cpp
-auto* modal = ui.Modal( []( auto ui, ui::dom::Modal* modal ){
+auto* modal = ui.Modal( []( auto ui, tatzel::dom::Modal* modal ){
 	ui.Card( [modal]( auto ui ){
 		ui.Paragraph( "Modal body" );
 
@@ -185,7 +191,7 @@ ui.Button( "Open modal", [modal]{
 
 ## Browser Protocol
 
-CppWebUI communicates with the browser using JSON messages over WebSockets.
+Tatzel communicates with the browser using JSON messages over WebSockets.
 
 Example browser-to-server message:
 
@@ -231,7 +237,7 @@ The protocol is intentionally simple for now and is expected to change as the fr
 
 ## Dependencies
 
-CppWebUI currently uses:
+Tatzel currently uses:
 
 * C++20/C++23
 * Drogon
@@ -289,8 +295,8 @@ Potential future ideas include:
 
 For internal tools, dashboards, simulations, game-engine tooling, trading tools, and server-side control panels, a C++ server-driven UI could be useful.
 
-This project is an experiment to see how far that idea can go.
+Tatzel is an experiment to see how far that idea can go.
 
 ## License
 
-CppWebUI is released under the MIT License.
+Tatzel is released under the MIT License.

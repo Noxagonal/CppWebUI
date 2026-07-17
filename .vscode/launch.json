@@ -8,7 +8,7 @@
 		"name": "(gdb) Launch",
 		"type": "cppdbg",
 		"request": "launch",
-		"program": "${workspaceFolder}/build/CppWebUI",
+		"program": "${workspaceFolder}/build/Tatzel",
 		"args": [],
 		"stopAtEntry": false,
 		"cwd": "${workspaceFolder}",

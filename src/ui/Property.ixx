@@ -5,7 +5,7 @@ module;
 export module UI.Property;
 
 
-namespace ui {
+namespace tatzel {
 
 
 export

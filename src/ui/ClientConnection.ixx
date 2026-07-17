@@ -12,7 +12,7 @@ import UI.PageBuilderCore;
 import UI.Page;
 
 
-namespace ui {
+namespace tatzel {
 
 
 export

@@ -9,7 +9,7 @@ import UI.ClientUpdater;
 import UI.DOM.Element;
 
 
-namespace ui {
+namespace tatzel {
 
 
 export
