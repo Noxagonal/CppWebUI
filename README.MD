@@ -1,4 +1,10 @@
-# Tatzel
+<p align="center">
+	<picture>
+		<img src="assets/LogoReadme.svg" alt="Tatzel logo" width="160">
+	</picture>
+</p>
+
+<h1 align="center">Tatzel</h1>
 
 Tatzel is a proof-of-concept C++ server-driven web UI framework inspired by projects like NiceGUI.
 
