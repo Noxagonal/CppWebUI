@@ -2,10 +2,10 @@
 	"compilerOptions": {
 		"target": "ES2020",
 		"module": "ES2020",
-		"rootDir": "src/ts",
+		"rootDir": "targets/typescript_build/src",
 		"outDir": "www/app",
 		"strict": true,
 		"sourceMap": true
 	},
-	"include": ["src/ts/*"]
+	"include": ["targets/typescript_build/src/*"]
 }
