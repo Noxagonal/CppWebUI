@@ -1,5 +1,9 @@
 cmake_minimum_required(VERSION 4.0)
 
+
+##############################################################
+# TypeScript compilation targets
+##############################################################
 find_program(NODE_EXECUTABLE node REQUIRED)
 find_program(NPM_EXECUTABLE npm REQUIRED)
 find_program(NPX_EXECUTABLE npx REQUIRED)
