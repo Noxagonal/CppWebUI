@@ -26,5 +26,4 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(drogon)
 
-add_subdirectory("project")
-add_subdirectory("development")
+add_subdirectory("targets")
