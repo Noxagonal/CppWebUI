@@ -7,7 +7,7 @@ include_guard(GLOBAL)
 # Example:
 # collect_files_by_extension(_SOURCE_FILES
 #     "${CMAKE_CURRENT_SOURCE_DIR}"
-#     c cpp h hpp
+#     c cc cpp cxx h hh hpp hxx
 # )
 function(collect_files_by_extension
 	OUTPUT_VAR
@@ -48,7 +48,35 @@ function(collect_source_files
 )
 	collect_files_by_extension(_FILES
 		"${BASE_DIR}"
-		c cpp h hpp
+		c cc cpp cxx h hh hpp hxx
+	)
+
+	set(${OUTPUT_VAR} "${_FILES}" PARENT_SCOPE)
+endfunction()
+
+
+# Collect ordinary C and C++ source files from a directory tree.
+function(collect_implementation_files
+	OUTPUT_VAR
+	BASE_DIR
+)
+	collect_files_by_extension(_FILES
+		"${BASE_DIR}"
+		c cc cpp cxx
+	)
+
+	set(${OUTPUT_VAR} "${_FILES}" PARENT_SCOPE)
+endfunction()
+
+
+# Collect ordinary C and C++ header files from a directory tree.
+function(collect_header_files
+	OUTPUT_VAR
+	BASE_DIR
+)
+	collect_files_by_extension(_FILES
+		"${BASE_DIR}"
+		h hh hpp hxx
 	)
 
 	set(${OUTPUT_VAR} "${_FILES}" PARENT_SCOPE)
