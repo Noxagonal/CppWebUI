@@ -6,30 +6,28 @@ export module UI.DOM.Modal;
 
 export import UI.DOM.Element;
 
-import UI.Property;
-
-
 namespace tatzel::dom {
-
 
 export
 class Modal : public Element
 {
 public:
-
 	using Element::Element;
 
-	inline Modal(
-		std::string_view id,
-		Element* parent,
-		bool open
-	) :
-		Element{ "dialog", id, parent },
-		open{ open }
+	inline Modal( std::string_view id, Element* parent, bool open ) :
+		Element{ "dialog", id, parent }, open{ open }
 	{}
 
-	Property<bool> open;
-};
+	auto IsOpen() const noexcept -> bool { return open; }
+	auto SetOpen( bool value ) -> void
+	{
+		if( open == value ) return;
+		open = value;
+		if( auto* queue = GetUpdateQueue() ) queue->SetModalOpen( id, open );
+	}
 
+private:
+	bool open = false;
+};
 
 }
