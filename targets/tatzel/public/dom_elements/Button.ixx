@@ -9,8 +9,6 @@ export module UI.DOM.Button;
 export import UI.DOM.Element;
 export import UI.DOM.Clickable;
 
-import UI.Property;
-
 
 namespace tatzel::dom {
 
@@ -19,7 +17,6 @@ export
 class Button : public Element, public Clickable
 {
 public:
-
 	using Element::Element;
 
 	inline Button(
@@ -28,16 +25,27 @@ public:
 		std::string_view text
 	) :
 		Element{ "button", id, parent },
-		text{ std::string{ text } }
+		text{ text }
 	{}
+
+	auto GetText() const noexcept -> std::string_view { return text; }
+
+	auto SetText( std::string_view value ) -> void
+	{
+		if( text == value ) return;
+		text = value;
+		if( auto* queue = GetUpdateQueue() ) queue->SetText( id, text );
+	}
 
 	inline virtual auto InvokeOnClick() -> void override
 	{
 		if( on_click ) on_click();
 	}
 
-	Property<std::string> text = std::string{ "Button" };
 	std::function<void()> on_click;
+
+private:
+	std::string text{ "Button" };
 };
 
 
