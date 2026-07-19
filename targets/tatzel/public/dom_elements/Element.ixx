@@ -7,15 +7,7 @@ module;
 export module UI.DOM.Element;
 
 import UI.Property;
-
-/*
-namespace tatzel {
-
-class ClientDOMTree;
-class PageBuilder;
-
-}
-*/
+import UI.ClientUpdateQueue;
 
 
 namespace tatzel::dom {
@@ -24,13 +16,7 @@ namespace tatzel::dom {
 export
 class Element
 {
-
-	// TODO: C++ modules currently prevent this.
-	//friend class ::tatzel::ClientDOMTree;
-	//friend class ::tatzel::PageBuilder;
-
 public:
-
 	inline Element(
 		std::string_view tag,
 		std::string_view id,
@@ -47,6 +33,16 @@ public:
 
 	auto operator=( const Element& ) -> Element& = delete;
 	auto operator=( Element&& ) -> Element& = default;
+
+	auto AttachUpdateQueue( ClientUpdateQueue& queue ) noexcept -> void
+	{
+		update_queue = &queue;
+	}
+
+	auto GetUpdateQueue() const noexcept -> ClientUpdateQueue*
+	{
+		return update_queue;
+	}
 
 	auto GetChildren() -> const std::vector<std::unique_ptr<Element>>&
 	{
@@ -75,7 +71,7 @@ public:
 	ReadOnlyProperty<Element*> parent;
 
 private:
-
+	ClientUpdateQueue* update_queue = nullptr;
 	std::unordered_map<std::string, std::string> attributes;
 	std::vector<std::unique_ptr<Element>> children;
 };
