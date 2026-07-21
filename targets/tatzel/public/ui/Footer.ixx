@@ -7,7 +7,7 @@ export module UI.DOM.Footer;
 export import UI.UI.Element;
 
 
-namespace tatzel::dom {
+namespace tatzel::ui {
 
 
 export

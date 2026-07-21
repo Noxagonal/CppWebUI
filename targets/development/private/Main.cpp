@@ -12,7 +12,7 @@ auto main() -> int
 		auto* label1 = ui.Heading( "Test" );
 		label1->text = "test";
 
-		auto* modal = ui.Modal( []( auto ui, tatzel::dom::Modal* modal ) {
+		auto* modal = ui.Modal( []( auto ui, tatzel::ui::Modal* modal ) {
 			ui.Card( [modal]( auto ui ){
 				ui.Header( []( auto ui ){
 					ui.Paragraph( "This is header" );

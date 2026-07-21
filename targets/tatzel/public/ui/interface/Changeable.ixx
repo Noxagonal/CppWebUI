@@ -5,7 +5,7 @@ module;
 export module UI.UI.Interface.Changeable;
 
 
-namespace tatzel::dom {
+namespace tatzel::ui {
 
 
 export

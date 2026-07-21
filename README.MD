@@ -29,7 +29,7 @@ auto main() -> int
 		auto* label1 = ui.Heading( "Test" );
 		label1->text = "test";
 
-		auto* modal = ui.Modal( []( auto ui, tatzel::dom::Modal* modal ) {
+		auto* modal = ui.Modal( []( auto ui, tatzel::ui::Modal* modal ) {
 			ui.Card( [modal]( auto ui ){
 				ui.Header( []( auto ui ){
 					ui.Paragraph( "This is header" );
@@ -174,7 +174,7 @@ app.RegisterPage( "/", []( tatzel::PageBuilder<> ui ){
 Elements with child builders can optionally expose the parent element to the builder. This is useful for components such as modals:
 
 ```cpp
-auto* modal = ui.Modal( []( auto ui, tatzel::dom::Modal* modal ){
+auto* modal = ui.Modal( []( auto ui, tatzel::ui::Modal* modal ){
 	ui.Card( [modal]( auto ui ){
 		ui.Paragraph( "Modal body" );
 

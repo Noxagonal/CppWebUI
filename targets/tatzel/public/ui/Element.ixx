@@ -18,7 +18,7 @@ class PageBuilder;
 */
 
 
-namespace tatzel::dom {
+namespace tatzel::ui {
 
 
 export

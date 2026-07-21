@@ -3,7 +3,7 @@ module;
 export module UI.UI.Interface.Submittable;
 
 
-namespace tatzel::dom {
+namespace tatzel::ui {
 
 
 export

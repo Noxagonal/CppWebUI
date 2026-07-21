@@ -3,7 +3,7 @@ module;
 export module UI.UI.Interface.Clickable;
 
 
-namespace tatzel::dom {
+namespace tatzel::ui {
 
 
 export

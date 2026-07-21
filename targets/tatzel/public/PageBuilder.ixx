@@ -52,7 +52,7 @@ public:
 
 	auto Heading( std::string_view text, dom::HeadingStyle style = dom::HeadingStyle::H1 ) -> dom::Heading*
 	{
-		auto* new_element = AddChild<tatzel::dom::Heading>(
+		auto* new_element = AddChild<tatzel::ui::Heading>(
 			style,
 			text
 		);
@@ -66,7 +66,7 @@ public:
 
 	auto Label( std::string_view text ) -> dom::Label*
 	{
-		auto* new_element = AddChild<tatzel::dom::Label>( text );
+		auto* new_element = AddChild<tatzel::ui::Label>( text );
 
 		this->BindSetText( new_element, &new_element->text );
 
@@ -77,7 +77,7 @@ public:
 
 	auto Button( std::string_view text, std::function<void()> on_click ) -> dom::Button*
 	{
-		auto* new_element = AddChild<tatzel::dom::Button>( text );
+		auto* new_element = AddChild<tatzel::ui::Button>( text );
 
 		this->BindSetText( new_element, &new_element->text );
 		this->BindEventOnClick( new_element );
@@ -90,7 +90,7 @@ public:
 
 	auto Paragraph( std::string_view text ) -> dom::Paragraph*
 	{
-		auto* new_element = AddChild<tatzel::dom::Paragraph>( text );
+		auto* new_element = AddChild<tatzel::ui::Paragraph>( text );
 
 		this->BindSetText( new_element, &new_element->text );
 
@@ -101,7 +101,7 @@ public:
 
 	auto Span( std::string_view text ) -> dom::Span*
 	{
-		auto* new_element = AddChild<tatzel::dom::Span>( text );
+		auto* new_element = AddChild<tatzel::ui::Span>( text );
 
 		this->BindSetText( new_element, &new_element->text );
 
@@ -112,7 +112,7 @@ public:
 
 	auto Link( std::string_view text, std::string_view href ) -> dom::Link*
 	{
-		auto* new_element = AddChild<tatzel::dom::Link>( text, href );
+		auto* new_element = AddChild<tatzel::ui::Link>( text, href );
 
 		this->BindSetText( new_element, &new_element->text );
 		this->BindSetAttribute( new_element, &new_element->href, "href" );
@@ -125,7 +125,7 @@ public:
 
 	auto Image( std::string_view src ) -> dom::Image*
 	{
-		auto* new_element = AddChild<tatzel::dom::Image>( src );
+		auto* new_element = AddChild<tatzel::ui::Image>( src );
 
 		this->BindSetAttribute( new_element, &new_element->src, "src" );
 
@@ -136,7 +136,7 @@ public:
 
 	auto HorizontalRule() -> dom::HorizontalRule*
 	{
-		auto* new_element = AddChild<tatzel::dom::HorizontalRule>();
+		auto* new_element = AddChild<tatzel::ui::HorizontalRule>();
 
 		return new_element;
 	}
@@ -144,7 +144,7 @@ public:
 	template<typename ChildBuilderFn>
 	auto Container( ChildBuilderFn&& child_builder_fn ) -> dom::Container*
 	{
-		auto* new_element = AddChild<tatzel::dom::Container>();
+		auto* new_element = AddChild<tatzel::ui::Container>();
 
 		this->BuildChildren( *new_element, std::forward<ChildBuilderFn>( child_builder_fn ) );
 
@@ -154,7 +154,7 @@ public:
 	template<typename ChildBuilderFn>
 	auto Card( ChildBuilderFn&& child_builder_fn ) -> dom::Card*
 	{
-		auto* new_element = AddChild<tatzel::dom::Card>();
+		auto* new_element = AddChild<tatzel::ui::Card>();
 
 		this->BuildChildren( *new_element, std::forward<ChildBuilderFn>( child_builder_fn ) );
 
@@ -164,7 +164,7 @@ public:
 	template<typename ChildBuilderFn>
 	auto Header( ChildBuilderFn&& child_builder_fn ) -> dom::Header*
 	{
-		auto* new_element = AddChild<tatzel::dom::Header>();
+		auto* new_element = AddChild<tatzel::ui::Header>();
 
 		this->BuildChildren( *new_element, std::forward<ChildBuilderFn>( child_builder_fn ) );
 
@@ -174,7 +174,7 @@ public:
 	template<typename ChildBuilderFn>
 	auto Footer( ChildBuilderFn&& child_builder_fn ) -> dom::Footer*
 	{
-		auto* new_element = AddChild<tatzel::dom::Footer>();
+		auto* new_element = AddChild<tatzel::ui::Footer>();
 
 		this->BuildChildren( *new_element, std::forward<ChildBuilderFn>( child_builder_fn ) );
 
@@ -184,7 +184,7 @@ public:
 	template<typename ChildBuilderFn>
 	auto Modal( ChildBuilderFn&& child_builder_fn ) -> dom::Modal*
 	{
-		auto* new_element = AddChild<tatzel::dom::Modal>( false /* Closed by default */ );
+		auto* new_element = AddChild<tatzel::ui::Modal>( false /* Closed by default */ );
 
 		this->BindSetModalOpen( new_element, &new_element->open );
 

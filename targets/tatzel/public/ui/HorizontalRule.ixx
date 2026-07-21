@@ -9,7 +9,7 @@ export import UI.UI.Element;
 import UI.Property;
 
 
-namespace tatzel::dom {
+namespace tatzel::ui {
 
 
 export

@@ -86,7 +86,7 @@ public:
 		if( json_op == "on_click" )
 		{
 			auto id = json[ "id" ].asString();
-			auto element = client_connection->client_dom_tree->FindElementById<tatzel::dom::Clickable>( id );
+			auto element = client_connection->client_dom_tree->FindElementById<tatzel::ui::Clickable>( id );
 			if( element ) element->InvokeOnClick();
 			return;
 		}
@@ -94,7 +94,7 @@ public:
 		if( json_op == "on_change" )
 		{
 			auto id = json[ "id" ].asString();
-			auto element = client_connection->client_dom_tree->FindElementById<tatzel::dom::Changeable>( id );
+			auto element = client_connection->client_dom_tree->FindElementById<tatzel::ui::Changeable>( id );
 			if( element ) element->InvokeOnChange( json[ "value" ].asString() );
 			return;
 		}
@@ -102,7 +102,7 @@ public:
 		if( json_op == "on_submit" )
 		{
 			auto id = json[ "id" ].asString();
-			auto element = client_connection->client_dom_tree->FindElementById<tatzel::dom::Submittable>( id );
+			auto element = client_connection->client_dom_tree->FindElementById<tatzel::ui::Submittable>( id );
 			if( element ) element->InvokeOnSubmit();
 			return;
 		}

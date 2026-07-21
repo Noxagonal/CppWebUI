@@ -12,7 +12,7 @@ export import UI.UI.Interface.Clickable;
 import UI.Property;
 
 
-namespace tatzel::dom {
+namespace tatzel::ui {
 
 
 export
