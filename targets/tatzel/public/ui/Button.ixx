@@ -6,8 +6,8 @@ module;
 
 export module UI.DOM.Button;
 
-export import UI.DOM.Element;
-export import UI.DOM.Clickable;
+export import UI.UI.Element;
+export import UI.UI.Interface.Clickable;
 
 import UI.Property;
 

@@ -2,7 +2,7 @@ module;
 
 #include <string_view>
 
-export module UI.DOM.Changeable;
+export module UI.UI.Interface.Changeable;
 
 
 namespace tatzel::dom {

@@ -12,9 +12,9 @@ import UI.ClientConnection;
 import UI.PageBuilder;
 import UI.App;
 
-import UI.DOM.Clickable;
-import UI.DOM.Changeable;
-import UI.DOM.Submittable;
+import UI.UI.Interface.Clickable;
+import UI.UI.Interface.Changeable;
+import UI.UI.Interface.Submittable;
 
 
 export

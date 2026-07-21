@@ -4,7 +4,7 @@ module;
 #include <string>
 #include <memory>
 
-export module UI.DOM.Element;
+export module UI.UI.Element;
 
 import UI.Property;
 

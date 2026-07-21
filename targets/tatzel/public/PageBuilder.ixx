@@ -8,7 +8,7 @@ import UI.PageBuilderCore;
 import UI.ClientUpdater;
 import UI.Utility;
 
-export import UI.DOM.Element;
+export import UI.UI.Element;
 export import UI.DOM.Label;
 export import UI.DOM.Container;
 export import UI.DOM.Button;

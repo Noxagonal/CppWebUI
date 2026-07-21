@@ -2,26 +2,26 @@ module;
 
 #include <string_view>
 
-export module UI.DOM.Container;
+export module UI.DOM.Header;
 
-export import UI.DOM.Element;
+export import UI.UI.Element;
 
 
 namespace tatzel::dom {
 
 
 export
-class Container : public Element
+class Header : public Element
 {
 public:
 
 	using Element::Element;
 
-	inline Container(
+	inline Header(
 		std::string_view id,
 		Element* parent
 	) :
-		Element{ "div", id, parent }
+		Element{ "header", id, parent }
 	{}
 };
 

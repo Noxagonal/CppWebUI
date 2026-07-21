@@ -5,7 +5,7 @@ module;
 
 export module UI.DOM.Image;
 
-export import UI.DOM.Element;
+export import UI.UI.Element;
 
 import UI.Property;
 
