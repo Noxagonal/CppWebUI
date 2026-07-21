@@ -1,8 +1,8 @@
 export module UI.Renderer.Renderer;
 
-export import UI.Renderer.LogicalElement;
+export import UI.UI.LogicalElement;
 
-export import UI.DOM.Element;
+export import UI.UI.Element;
 export import UI.DOM.Label;
 export import UI.DOM.Container;
 export import UI.DOM.Button;

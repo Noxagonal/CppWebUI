@@ -8,7 +8,7 @@ module;
 module UI.App;
 
 import UI.Utility;
-import UI.DOM.Element;
+import UI.UI.Element;
 
 
 tatzel::App* global_app = nullptr;

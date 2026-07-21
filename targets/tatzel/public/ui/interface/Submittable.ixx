@@ -1,6 +1,6 @@
 module;
 
-export module UI.DOM.Submittable;
+export module UI.UI.Interface.Submittable;
 
 
 namespace tatzel::dom {

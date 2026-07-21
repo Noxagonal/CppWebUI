@@ -1,6 +1,6 @@
 module;
 
-export module UI.DOM.Clickable;
+export module UI.UI.Interface.Clickable;
 
 
 namespace tatzel::dom {

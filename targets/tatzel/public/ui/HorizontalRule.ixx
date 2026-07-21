@@ -4,7 +4,7 @@ module;
 
 export module UI.DOM.HorizontalRule;
 
-export import UI.DOM.Element;
+export import UI.UI.Element;
 
 import UI.Property;
 

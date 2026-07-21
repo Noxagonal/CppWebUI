@@ -2,26 +2,26 @@ module;
 
 #include <string_view>
 
-export module UI.DOM.Card;
+export module UI.DOM.Footer;
 
-export import UI.DOM.Element;
+export import UI.UI.Element;
 
 
 namespace tatzel::dom {
 
 
 export
-class Card : public Element
+class Footer : public Element
 {
 public:
 
 	using Element::Element;
 
-	inline Card(
+	inline Footer(
 		std::string_view id,
 		Element* parent
 	) :
-		Element{ "article", id, parent }
+		Element{ "footer", id, parent }
 	{}
 };
 

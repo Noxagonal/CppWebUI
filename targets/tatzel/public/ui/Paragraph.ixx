@@ -3,9 +3,9 @@ module;
 #include <string_view>
 #include <string>
 
-export module UI.DOM.Label;
+export module UI.DOM.Paragraph;
 
-export import UI.DOM.Element;
+export import UI.UI.Element;
 
 import UI.Property;
 
@@ -14,18 +14,18 @@ namespace tatzel::dom {
 
 
 export
-class Label : public Element
+class Paragraph : public Element
 {
 public:
 
 	using Element::Element;
 
-	inline Label(
+	inline Paragraph(
 		std::string_view id,
 		Element* parent,
 		std::string_view text
 	) :
-		Element{ "label", id, parent },
+		Element{ "p", id, parent },
 		text{ std::string{ text } }
 	{}
 

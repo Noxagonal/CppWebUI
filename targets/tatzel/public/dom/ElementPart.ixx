@@ -6,7 +6,7 @@ module;
 #include <string_view>
 #include <utility>
 
-export module UI.Renderer.ElementPart;
+export module UI.UI.ElementPart;
 
 
 namespace tatzel {

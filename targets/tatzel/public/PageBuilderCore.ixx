@@ -4,7 +4,7 @@ export module UI.PageBuilderCore;
 
 import UI.ClientDOMTree;
 import UI.ClientUpdater;
-import UI.DOM.Element;
+import UI.UI.Element;
 
 
 namespace tatzel {

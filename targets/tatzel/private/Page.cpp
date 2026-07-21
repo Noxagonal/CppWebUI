@@ -4,7 +4,7 @@ module;
 
 module UI.Page;
 
-import UI.DOM.Element;
+import UI.UI.Element;
 
 
 tatzel::Page::Page(

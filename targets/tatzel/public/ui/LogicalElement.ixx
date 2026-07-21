@@ -6,11 +6,11 @@ module;
 #include <string>
 #include <string_view>
 
-export module UI.Renderer.LogicalElement;
+export module UI.UI.LogicalElement;
 
-export import UI.Renderer.ElementPart;
+export import UI.UI.ElementPart;
 
-import UI.DOM.Element;
+import UI.UI.Element;
 
 
 namespace tatzel {
