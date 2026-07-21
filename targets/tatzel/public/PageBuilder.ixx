@@ -57,9 +57,9 @@ public:
 			text
 		);
 
-		this->BindSetText( new_element, &new_element->text );
-
-		new_element->text = text;
+		//this->BindSetText( new_element, &new_element->text );
+		//new_element->text = text;
+		new_element->SetText( text );
 
 		return new_element;
 	}
@@ -68,22 +68,22 @@ public:
 	{
 		auto* new_element = AddChild<tatzel::dom::Label>( text );
 
-		this->BindSetText( new_element, &new_element->text );
-
-		new_element->text = text;
+		//this->BindSetText( new_element, &new_element->text );
+		// new_element->text = text;
+		new_element->SetText( text );
 
 		return new_element;
 	}
 
 	auto Button( std::string_view text, std::function<void()> on_click ) -> dom::Button*
 	{
-		auto* new_element = AddChild<tatzel::dom::Button>( text );
+		auto* new_element = AddChild<tatzel::dom::Button>( text, on_click );
 
-		this->BindSetText( new_element, &new_element->text );
-		this->BindEventOnClick( new_element );
+		//this->BindSetText( new_element, &new_element->text );
+		//this->BindEventOnClick( new_element );
 
-		new_element->text = text;
-		new_element->on_click = std::move( on_click );
+		//new_element->text = text;
+		//new_element->on_click = std::move( on_click );
 
 		return new_element;
 	}
@@ -92,9 +92,9 @@ public:
 	{
 		auto* new_element = AddChild<tatzel::dom::Paragraph>( text );
 
-		this->BindSetText( new_element, &new_element->text );
+		//this->BindSetText( new_element, &new_element->text );
 
-		new_element->text = text;
+		//new_element->text = text;
 
 		return new_element;
 	}
@@ -103,9 +103,9 @@ public:
 	{
 		auto* new_element = AddChild<tatzel::dom::Span>( text );
 
-		this->BindSetText( new_element, &new_element->text );
+		//this->BindSetText( new_element, &new_element->text );
 
-		new_element->text = text;
+		//new_element->text = text;
 
 		return new_element;
 	}
@@ -114,11 +114,11 @@ public:
 	{
 		auto* new_element = AddChild<tatzel::dom::Link>( text, href );
 
-		this->BindSetText( new_element, &new_element->text );
-		this->BindSetAttribute( new_element, &new_element->href, "href" );
+		//this->BindSetText( new_element, &new_element->text );
+		//this->BindSetAttribute( new_element, &new_element->href, "href" );
 
-		new_element->text = text;
-		new_element->href = href;
+		//new_element->text = text;
+		//new_element->href = href;
 
 		return new_element;
 	}
@@ -127,9 +127,9 @@ public:
 	{
 		auto* new_element = AddChild<tatzel::dom::Image>( src );
 
-		this->BindSetAttribute( new_element, &new_element->src, "src" );
+		//this->BindSetAttribute( new_element, &new_element->src, "src" );
 
-		new_element->src = src;
+		//new_element->src = src;
 
 		return new_element;
 	}
@@ -186,7 +186,7 @@ public:
 	{
 		auto* new_element = AddChild<tatzel::dom::Modal>( false /* Closed by default */ );
 
-		this->BindSetModalOpen( new_element, &new_element->open );
+		//this->BindSetModalOpen( new_element, &new_element->open );
 
 		this->BuildChildren( *new_element, std::forward<ChildBuilderFn>( child_builder_fn ) );
 

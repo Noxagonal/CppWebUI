@@ -10,7 +10,7 @@ auto main() -> int
 
 	app.RegisterPage("/", [&]( tatzel::PageBuilder<> ui ) {
 		auto* label1 = ui.Heading( "Test" );
-		label1->text = "test";
+		label1->SetText( "test" );
 
 		auto* modal = ui.Modal( []( auto ui, tatzel::dom::Modal* modal ) {
 			ui.Card( [modal]( auto ui ){
@@ -21,7 +21,7 @@ auto main() -> int
 				ui.Footer( [modal]( auto ui ) {
 					ui.Paragraph( "This is footer" );
 					ui.Button( "Close", [modal]{
-						if( modal ) modal->open = false;
+						if( modal ) modal->SetOpen( false );
 					} );
 				} );
 			} );
@@ -36,8 +36,8 @@ auto main() -> int
 
 				// label1.text is a custom property type with getters and
 				// setters so setting it will update the browser immediately.
-				label1->text = "Clicked times: " + std::to_string( counter );
-				modal->open = true;
+				label1->SetText( "Clicked times: " + std::to_string( counter ) );
+				if( modal ) modal->SetOpen( true );
 			} );
 		} );
 		ui.HorizontalRule();

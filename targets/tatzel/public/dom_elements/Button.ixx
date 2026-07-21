@@ -22,14 +22,15 @@ public:
 	inline Button(
 		std::string_view id,
 		Element* parent,
-		std::string_view text
+		std::string_view text,
+		std::function<void()> on_click
 	) :
 		Element{ "button", id, parent },
-		text{ text }
+		text{ text },
+		on_click{ on_click }
 	{}
 
 	auto GetText() const noexcept -> std::string_view { return text; }
-
 	auto SetText( std::string_view value ) -> void
 	{
 		if( text == value ) return;
@@ -42,9 +43,9 @@ public:
 		if( on_click ) on_click();
 	}
 
-	std::function<void()> on_click;
+	private:
 
-private:
+	std::function<void()> on_click;
 	std::string text{ "Button" };
 };
 

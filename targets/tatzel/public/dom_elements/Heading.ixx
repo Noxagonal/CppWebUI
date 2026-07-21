@@ -66,8 +66,20 @@ public:
 		text{ std::string{ text } }
 	{}
 
-	Property<std::string> text;
-	ReadOnlyProperty<HeadingStyle> heading_style = HeadingStyle::H1;
+	auto GetText() const noexcept -> std::string_view { return text; }
+	auto SetText( std::string_view value ) -> void
+	{
+		if( text == value ) return;
+		text = value;
+		if( auto* queue = GetUpdateQueue() ) queue->SetText( id, text );
+	}
+
+	auto GetHeadingStyle() const noexcept -> HeadingStyle { return heading_style; }
+
+private:
+
+	std::string text;
+	HeadingStyle heading_style = HeadingStyle::H1;
 };
 
 
