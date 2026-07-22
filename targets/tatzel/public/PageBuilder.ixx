@@ -298,7 +298,7 @@ private:
 		return new_element_ptr;
 	}
 
-	template<typename ParentT, typename ChildBuilderFn>
+	template<ui::LogicalElementDerived ParentT, typename ChildBuilderFn>
 	auto BuildChildren( ParentT& parent, ChildBuilderFn&& child_builder_fn ) -> void
 	{
 		using ScopedBuilderT = PageBuilder<ParentT>;
