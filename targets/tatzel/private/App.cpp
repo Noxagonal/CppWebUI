@@ -8,7 +8,7 @@ module;
 module UI.App;
 
 import UI.Utility;
-import UI.UI.Element;
+import UI.UI.LogicalElement;
 
 
 tatzel::App* global_app = nullptr;
@@ -27,7 +27,7 @@ tatzel::App::~App()
 }
 
 
-auto tatzel::App::RegisterPage( std::string_view route_path, std::function<void( PageBuilder<dom::Element> )>&& page_builder_fn ) -> void
+auto tatzel::App::RegisterPage( std::string_view route_path, std::function<void( PageBuilder<ui::LogicalElement> )>&& page_builder_fn ) -> void
 {
 	drogon::app().registerHandler(
 		std::string{ route_path },

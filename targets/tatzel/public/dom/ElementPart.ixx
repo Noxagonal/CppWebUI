@@ -2,14 +2,16 @@ module;
 
 #include <cstddef>
 #include <optional>
-#include <span>
+#include <string>
 #include <string_view>
+#include <vector>
+#include <span>
 #include <utility>
 
-export module UI.UI.ElementPart;
+export module UI.DOM.ElementPart;
 
 
-namespace tatzel {
+namespace tatzel::dom {
 
 
 export
@@ -26,17 +28,17 @@ public:
 		std::span<const Attribute> attributes = {},
 		std::optional<std::size_t> parent_index = std::nullopt
 	) :
-		name{ name },
-		tag{ tag },
-		classes{ classes },
-		attributes{ attributes },
+		name{ std::string{ name } },
+		tag{ std::string{ tag } },
+		classes{ classes.begin(), classes.end() },
+		attributes{ attributes.begin(), attributes.end() },
 		parent_index{ parent_index }
 	{}
 
-	std::string_view name;
-	std::string_view tag;
-	std::span<const std::string_view> classes;
-	std::span<const Attribute> attributes;
+	std::string name;
+	std::string tag;
+	std::vector<std::string> classes;
+	std::vector<Attribute> attributes;
 	std::optional<std::size_t> parent_index;
 };
 

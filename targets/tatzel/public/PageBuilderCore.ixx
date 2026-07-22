@@ -4,7 +4,7 @@ export module UI.PageBuilderCore;
 
 import UI.ClientDOMTree;
 import UI.ClientUpdater;
-import UI.UI.Element;
+import UI.UI.LogicalElement;
 
 
 namespace tatzel {
@@ -34,7 +34,7 @@ public:
 
 private:
 	ClientDOMTree* dom_tree = nullptr;
-	dom::Element* root_element = nullptr;
+	ui::LogicalElement* root_element = nullptr;
 	ClientUpdater* client_updater = nullptr;
 };
 

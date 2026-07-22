@@ -5,32 +5,32 @@ module;
 
 export module UI.DOM.Span;
 
-export import UI.UI.Element;
+export import UI.UI.LogicalElement;
 
 import UI.Property;
 
 
 namespace tatzel::ui {
 
-
+/*
 export
-class Span : public Element
+class Span : public LogicalElement
 {
 public:
 
-	using Element::Element;
+	using LogicalElement::LogicalElement;
 
 	inline Span(
 		std::string_view id,
-		Element* parent,
+		LogicalElement* parent,
 		std::string_view text
 	) :
-		Element{ "span", id, parent },
+		LogicalElement{ "span", id, parent },
 		text( std::string{ text } )
 	{}
 
 	Property<std::string> text;
 };
-
+*/
 
 }

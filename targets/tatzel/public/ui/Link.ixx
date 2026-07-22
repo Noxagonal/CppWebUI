@@ -5,28 +5,28 @@ module;
 
 export module UI.DOM.Link;
 
-export import UI.UI.Element;
+export import UI.UI.LogicalElement;
 
 import UI.Property;
 
 
 namespace tatzel::ui {
 
-
+/*
 export
-class Link : public Element
+class Link : public LogicalElement
 {
 public:
 
-	using Element::Element;
+	using LogicalElement::LogicalElement;
 
 	inline Link(
 		std::string_view id,
-		Element* parent,
+		LogicalElement* parent,
 		std::string_view text,
 		std::string_view href
 	) :
-		Element{ "a", id, parent },
+		LogicalElement{ "a", id, parent },
 		text{ std::string{ text } },
 		href{ std::string{ href } }
 	{}
@@ -34,6 +34,6 @@ public:
 	Property<std::string> text;
 	Property<std::string> href;
 };
-
+*/
 
 }

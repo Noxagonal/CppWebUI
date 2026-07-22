@@ -4,7 +4,7 @@ module;
 
 export module UI.ClientDOMTree;
 
-import UI.UI.Element;
+import UI.UI.LogicalElement;
 
 
 namespace tatzel {
@@ -22,13 +22,13 @@ public:
 	auto operator=( const ClientDOMTree& ) -> ClientDOMTree& = delete;
 	auto operator=( ClientDOMTree&& ) -> ClientDOMTree& = default;
 
-	template<typename ElementT = dom::Element>
+	template<typename ElementT>
 	auto FindElementById( std::string_view id ) -> ElementT*
 	{
-		auto RecursiveSearch = [id](this auto& self, dom::Element& element) -> dom::Element*
+		auto RecursiveSearch = [id](this auto& self, ui::LogicalElement& element) -> ui::LogicalElement*
 		{
-			if( element.id == id ) return &element;
-			for( auto& child : element.GetChildren() )
+			if( element.GetID() == id ) return &element;
+			for( const auto& child : element.GetChildren() )
 			{
 				auto found = self( *child );
 				if( found ) return found;
@@ -39,7 +39,7 @@ public:
 		return dynamic_cast<ElementT*>( RecursiveSearch( root ) );
 	}
 
-	dom::Element root;
+	ui::LogicalElement root;
 };
 
 

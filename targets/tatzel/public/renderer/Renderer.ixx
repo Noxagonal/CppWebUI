@@ -2,7 +2,7 @@ export module UI.Renderer.Renderer;
 
 export import UI.UI.LogicalElement;
 
-export import UI.UI.Element;
+export import UI.UI.LogicalElement;
 export import UI.DOM.Label;
 export import UI.DOM.Container;
 export import UI.DOM.Button;
@@ -28,20 +28,20 @@ public:
 
 	virtual ~Renderer() = default;
 
-	virtual auto CreateElement( dom::Element* element ) -> LogicalElement = 0;
-	virtual auto CreateLabel( dom::Label* element ) -> LogicalElement = 0;
-	virtual auto CreateContainer( dom::Container* element ) -> LogicalElement = 0;
-	virtual auto CreateButton( dom::Button* element ) -> LogicalElement = 0;
-	virtual auto CreateHeading( dom::Heading* element ) -> LogicalElement = 0;
-	virtual auto CreateParagraph( dom::Paragraph* element ) -> LogicalElement = 0;
-	virtual auto CreateSpan( dom::Span* element ) -> LogicalElement = 0;
-	virtual auto CreateLink( dom::Link* element ) -> LogicalElement = 0;
-	virtual auto CreateImage( dom::Image* element ) -> LogicalElement = 0;
-	virtual auto CreateHorizontalRule( dom::HorizontalRule* element ) -> LogicalElement = 0;
-	virtual auto CreateModal( dom::Modal* element ) -> LogicalElement = 0;
-	virtual auto CreateCard( dom::Card* element ) -> LogicalElement = 0;
-	virtual auto CreateHeader( dom::Header* element ) -> LogicalElement = 0;
-	virtual auto CreateFooter( dom::Footer* element ) -> LogicalElement = 0;
+	virtual auto CreateElement( ui::LogicalElement* element ) -> ui::LogicalElement* = 0;
+	//virtual auto CreateLabel( ui::Label* element ) -> ui::LogicalElement = 0;
+	//virtual auto CreateContainer( ui::Container* element ) -> ui::LogicalElement = 0;
+	//virtual auto CreateButton( ui::Button* element ) -> ui::LogicalElement = 0;
+	virtual auto CreateHeading( ui::Heading* element ) -> ui::Heading* = 0;
+	//virtual auto CreateParagraph( ui::Paragraph* element ) -> ui::LogicalElement = 0;
+	//virtual auto CreateSpan( ui::Span* element ) -> ui::LogicalElement = 0;
+	//virtual auto CreateLink( ui::Link* element ) -> ui::LogicalElement = 0;
+	//virtual auto CreateImage( ui::Image* element ) -> ui::LogicalElement = 0;
+	//virtual auto CreateHorizontalRule( ui::HorizontalRule* element ) -> ui::LogicalElement = 0;
+	//virtual auto CreateModal( ui::Modal* element ) -> ui::LogicalElement = 0;
+	//virtual auto CreateCard( ui::Card* element ) -> ui::LogicalElement = 0;
+	//virtual auto CreateHeader( ui::Header* element ) -> ui::LogicalElement = 0;
+	//virtual auto CreateFooter( ui::Footer* element ) -> ui::LogicalElement = 0;
 };
 
 

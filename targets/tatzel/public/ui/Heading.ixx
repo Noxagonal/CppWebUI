@@ -2,10 +2,12 @@ module;
 
 #include <string_view>
 #include <string>
+#include <span>
+#include <stdexcept>
 
 export module UI.DOM.Heading;
 
-export import UI.UI.Element;
+export import UI.UI.LogicalElement;
 
 import UI.Property;
 
@@ -49,21 +51,18 @@ inline auto HeadingStyleToTag( HeadingStyle style ) -> std::string_view
 
 
 export
-class Heading : public Element
+class Heading : public LogicalElement
 {
 public:
 
-	using Element::Element;
+	using LogicalElement::LogicalElement;
 
 	inline Heading(
 		std::string_view id,
-		Element* parent,
-		HeadingStyle heading_style,
-		std::string_view text
+		LogicalElement* parent,
+		std::span<const dom::ElementPart> parts
 	) :
-		Element{ HeadingStyleToTag( heading_style ), id, parent },
-		heading_style{ heading_style },
-		text{ std::string{ text } }
+		LogicalElement{ id, parent, parts }
 	{}
 
 	Property<std::string> text;

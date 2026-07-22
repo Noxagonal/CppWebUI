@@ -4,12 +4,12 @@ module;
 
 module UI.Page;
 
-import UI.UI.Element;
+import UI.UI.LogicalElement;
 
 
 tatzel::Page::Page(
 	std::string_view route_path,
-	std::function<void( PageBuilder<dom::Element> )>&& page_builder_fn
+	std::function<void( PageBuilder<ui::LogicalElement> )>&& page_builder_fn
 ) :
 	route_path( route_path ),
 	page_builder_fn( std::move( page_builder_fn ) )

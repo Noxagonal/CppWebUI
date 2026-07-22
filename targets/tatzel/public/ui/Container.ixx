@@ -4,26 +4,27 @@ module;
 
 export module UI.DOM.Container;
 
-export import UI.UI.Element;
+export import UI.UI.LogicalElement;
 
 
 namespace tatzel::ui {
 
-
+/*
 export
-class Container : public Element
+class Container : public LogicalElement
 {
 public:
 
-	using Element::Element;
+	using LogicalElement::LogicalElement;
 
 	inline Container(
 		std::string_view id,
-		Element* parent
+		LogicalElement* parent
 	) :
-		Element{ "div", id, parent }
+		LogicalElement{ "div", id, parent }
 	{}
 };
+*/
 
 
 }

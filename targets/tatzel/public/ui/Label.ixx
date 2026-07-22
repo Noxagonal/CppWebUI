@@ -5,32 +5,32 @@ module;
 
 export module UI.DOM.Label;
 
-export import UI.UI.Element;
+export import UI.UI.LogicalElement;
 
 import UI.Property;
 
 
 namespace tatzel::ui {
 
-
+/*
 export
-class Label : public Element
+class Label : public LogicalElement
 {
 public:
 
-	using Element::Element;
+	using LogicalElement::LogicalElement;
 
 	inline Label(
 		std::string_view id,
-		Element* parent,
+		LogicalElement* parent,
 		std::string_view text
 	) :
-		Element{ "label", id, parent },
+		LogicalElement{ "label", id, parent },
 		text{ std::string{ text } }
 	{}
 
 	Property<std::string> text;
 };
-
+*/
 
 }

@@ -3,10 +3,11 @@ module;
 #include <string_view>
 #include <string>
 #include <functional>
+#include <span>
 
 export module UI.DOM.Button;
 
-export import UI.UI.Element;
+export import UI.UI.LogicalElement;
 export import UI.UI.Interface.Clickable;
 
 import UI.Property;
@@ -16,19 +17,18 @@ namespace tatzel::ui {
 
 
 export
-class Button : public Element, public Clickable
+class Button : public LogicalElement, public interface::Clickable
 {
 public:
 
-	using Element::Element;
+	using LogicalElement::LogicalElement;
 
 	inline Button(
 		std::string_view id,
-		Element* parent,
-		std::string_view text
+		LogicalElement* parent,
+		std::span<const dom::ElementPart> parts
 	) :
-		Element{ "button", id, parent },
-		text{ std::string{ text } }
+		LogicalElement{ id, parent, parts }
 	{}
 
 	inline virtual auto InvokeOnClick() -> void override

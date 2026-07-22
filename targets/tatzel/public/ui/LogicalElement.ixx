@@ -5,15 +5,15 @@ module;
 #include <span>
 #include <string>
 #include <string_view>
+#include <vector>
+#include <memory>
 
 export module UI.UI.LogicalElement;
 
-export import UI.UI.ElementPart;
-
-import UI.UI.Element;
+export import UI.DOM.ElementPart;
 
 
-namespace tatzel {
+namespace tatzel::ui {
 
 
 export
@@ -22,46 +22,58 @@ class LogicalElement
 public:
 
 	inline LogicalElement(
-		dom::Element* element,
-		std::span<const ElementPart> parts
+		std::string_view id,
+		LogicalElement* parent,
+		std::span<const dom::ElementPart> parts
 	) :
-		element{ element },
-		parts{ parts }
-	{
-		assert( element );
-	}
+		id{ id },
+		parent{ parent },
+		part_list{ parts.begin(), parts.end() }
+	{}
 
 	LogicalElement( const LogicalElement& ) = default;
 	LogicalElement( LogicalElement&& ) = default;
-	~LogicalElement() = default;
+	virtual ~LogicalElement() = default;
 
 	auto operator=( const LogicalElement& ) -> LogicalElement& = default;
 	auto operator=( LogicalElement&& ) -> LogicalElement& = default;
 
-	auto GetElement() const noexcept -> dom::Element*
-	{
-		return element;
-	}
-
-	auto GetParts() const noexcept -> std::span<const ElementPart>
-	{
-		return parts;
-	}
+	auto GetID() const noexcept -> std::string_view { return id; }
+	auto GetParent() const noexcept -> LogicalElement* { return parent; }
+	auto GetParts() const noexcept -> std::span<const dom::ElementPart> { return part_list; }
 
 	auto GetPartID( std::size_t part_index ) const -> std::string
 	{
-		assert( part_index < parts.size() );
+		assert( part_index < part_list.size() );
 
-		return std::string{ std::string_view{ element->id } }
+		return std::string{ std::string_view{ GetID() } }
 			+ "--"
-			+ std::string{ parts[ part_index ].name };
+			+ std::string{ part_list[ part_index ].name };
 	}
+
+	template<typename ElementT>
+	requires( std::derived_from<ElementT, LogicalElement> )
+	auto InsertChild( std::unique_ptr<ElementT> child ) -> ElementT*
+	{
+		auto child_ptr = child.get();
+		child_list.push_back( std::move( child ) );
+		return child_ptr;
+	}
+
+	auto GetChildren() const -> const std::vector<std::unique_ptr<LogicalElement>>& { return child_list; }
 
 private:
 
-	dom::Element* element = nullptr;
-	std::span<const ElementPart> parts;
+	std::string id;
+	LogicalElement* parent = nullptr;
+	std::vector<dom::ElementPart> part_list;
+	std::vector<std::unique_ptr<LogicalElement>> child_list;
 };
+
+
+export
+template<typename T>
+concept LogicalElementDerived = std::derived_from<T, LogicalElement>;
 
 
 }

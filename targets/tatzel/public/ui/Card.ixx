@@ -4,26 +4,27 @@ module;
 
 export module UI.DOM.Card;
 
-export import UI.UI.Element;
+export import UI.UI.LogicalElement;
 
 
 namespace tatzel::ui {
 
-
+/*
 export
-class Card : public Element
+class Card : public LogicalElement
 {
 public:
 
-	using Element::Element;
+	using LogicalElement::LogicalElement;
 
 	inline Card(
 		std::string_view id,
-		Element* parent
+		LogicalElement* parent,
+		std::span<const dom::ElementPart> parts
 	) :
-		Element{ "article", id, parent }
+		LogicalElement{ id, parent, parts }
 	{}
 };
-
+*/
 
 }

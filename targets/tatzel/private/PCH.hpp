@@ -15,6 +15,7 @@
 #include <vector>
 #include <filesystem>
 #include <fstream>
+#include <span>
 
 // Drogon
 #include <drogon/drogon.h>

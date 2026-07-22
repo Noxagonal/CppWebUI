@@ -4,28 +4,28 @@ module;
 
 export module UI.DOM.HorizontalRule;
 
-export import UI.UI.Element;
+export import UI.UI.LogicalElement;
 
 import UI.Property;
 
 
 namespace tatzel::ui {
 
-
+/*
 export
-class HorizontalRule : public Element
+class HorizontalRule : public LogicalElement
 {
 public:
 
-	using Element::Element;
+	using LogicalElement::LogicalElement;
 
 	inline HorizontalRule(
 		std::string_view id,
-		Element* parent
+		LogicalElement* parent
 	) :
-		Element{ "hr", id, parent }
+		LogicalElement{ "hr", id, parent }
 	{}
 };
-
+*/
 
 }

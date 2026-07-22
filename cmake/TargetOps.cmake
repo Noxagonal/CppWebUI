@@ -118,4 +118,10 @@ function(set_default_target_files
 		)
 	endif()
 
+	set_source_files_properties(
+		${_PUBLIC_MODULE_FILES}
+		PROPERTIES
+			SKIP_PRECOMPILE_HEADERS ON
+	)
+
 endfunction()

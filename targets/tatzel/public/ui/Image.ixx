@@ -5,32 +5,32 @@ module;
 
 export module UI.DOM.Image;
 
-export import UI.UI.Element;
+export import UI.UI.LogicalElement;
 
 import UI.Property;
 
 
 namespace tatzel::ui {
 
-
+/*
 export
-class Image : public Element
+class Image : public LogicalElement
 {
 public:
 
-	using Element::Element;
+	using LogicalElement::LogicalElement;
 
 	inline Image(
 		std::string_view id,
-		Element* parent,
+		LogicalElement* parent,
 		std::string_view src
 	) :
-		Element{ "img", id, parent },
+		LogicalElement{ "img", id, parent },
 		src{ std::string{ src } }
 	{}
 
 	Property<std::string> src;
 };
-
+*/
 
 }

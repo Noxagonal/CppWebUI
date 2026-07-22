@@ -4,26 +4,26 @@ module;
 
 export module UI.DOM.Footer;
 
-export import UI.UI.Element;
+export import UI.UI.LogicalElement;
 
 
 namespace tatzel::ui {
 
-
+/*
 export
-class Footer : public Element
+class Footer : public LogicalElement
 {
 public:
 
-	using Element::Element;
+	using LogicalElement::LogicalElement;
 
 	inline Footer(
 		std::string_view id,
-		Element* parent
+		LogicalElement* parent
 	) :
-		Element{ "footer", id, parent }
+		LogicalElement{ "footer", id, parent }
 	{}
 };
-
+*/
 
 }

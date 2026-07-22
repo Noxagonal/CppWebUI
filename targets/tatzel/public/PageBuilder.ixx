@@ -1,6 +1,9 @@
 module;
 
 #include <memory>
+#include <vector>
+#include <functional>
+#include <cassert>
 
 export module UI.PageBuilder;
 
@@ -8,7 +11,7 @@ import UI.PageBuilderCore;
 import UI.ClientUpdater;
 import UI.Utility;
 
-export import UI.UI.Element;
+export import UI.UI.LogicalElement;
 export import UI.DOM.Label;
 export import UI.DOM.Container;
 export import UI.DOM.Button;
@@ -28,7 +31,7 @@ namespace tatzel {
 
 
 export
-template<dom::ElementDerived ElementT = dom::Element>
+template<ui::LogicalElementDerived ElementT = ui::LogicalElement>
 class PageBuilder
 {
 public:
@@ -44,26 +47,20 @@ public:
 
 	auto operator=( const PageBuilder& other ) -> PageBuilder& = default;
 
-	template<dom::ElementDerived NewParentScopeT = dom::Element>
+	template<ui::LogicalElementDerived NewParentScopeT = ui::LogicalElement>
 	auto Scope( NewParentScopeT& new_parent ) const -> PageBuilder<NewParentScopeT>
 	{
 		return { *core, new_parent };
 	}
 
-	auto Heading( std::string_view text, dom::HeadingStyle style = dom::HeadingStyle::H1 ) -> dom::Heading*
+	auto Heading( std::string_view text, ui::HeadingStyle style = ui::HeadingStyle::H1 ) -> ui::Heading*
 	{
-		auto* new_element = AddChild<tatzel::ui::Heading>(
-			style,
-			text
-		);
-
-		this->BindSetText( new_element, &new_element->text );
-
-		new_element->text = text;
+		auto* new_element = AddChild<tatzel::ui::Heading>();
 
 		return new_element;
 	}
 
+	/*
 	auto Label( std::string_view text ) -> dom::Label*
 	{
 		auto* new_element = AddChild<tatzel::ui::Label>( text );
@@ -180,23 +177,23 @@ public:
 
 		return new_element;
 	}
-
-	template<typename ChildBuilderFn>
-	auto Modal( ChildBuilderFn&& child_builder_fn ) -> dom::Modal*
-	{
-		auto* new_element = AddChild<tatzel::ui::Modal>( false /* Closed by default */ );
-
-		this->BindSetModalOpen( new_element, &new_element->open );
-
-		this->BuildChildren( *new_element, std::forward<ChildBuilderFn>( child_builder_fn ) );
-
-		return new_element;
-	}
+*/
+//	template<typename ChildBuilderFn>
+//	auto Modal( ChildBuilderFn&& child_builder_fn ) -> dom::Modal*
+//	{
+//		auto* new_element = AddChild<tatzel::ui::Modal>( false /* Closed by default */ );
+//
+//		this->BindSetModalOpen( new_element, &new_element->open );
+//
+//		this->BuildChildren( *new_element, std::forward<ChildBuilderFn>( child_builder_fn ) );
+//
+//		return new_element;
+//	}
 
 private:
 
 	auto BindSetProperty(
-		dom::ElementDerived auto* element,
+		ui::LogicalElementDerived auto* element,
 		auto* property,
 		auto&& update_fn
 	) -> void
@@ -208,7 +205,7 @@ private:
 
 		auto* client_updater = this->core->GetClientUpdater();
 		assert( client_updater );
-		auto element_id = std::string_view{ element->id };
+		auto element_id = std::string_view{ element->GetID() };
 
 		property->OnSet( [client_updater, element_id = std::string{ element_id }, update_fn = std::forward<UpdateFn>( update_fn ) ]( const auto& value ) mutable {
 			std::invoke( update_fn, client_updater, element_id, value );
@@ -216,7 +213,7 @@ private:
 	}
 
 	auto BindSetText(
-		dom::ElementDerived auto* element,
+		ui::LogicalElementDerived auto* element,
 		auto* property
 	) -> void
 	{
@@ -230,7 +227,7 @@ private:
 	}
 
 	auto BindSetAttribute(
-		dom::ElementDerived auto* element,
+		ui::LogicalElementDerived auto* element,
 		auto* property,
 		std::string_view attribute
 	) -> void
@@ -245,7 +242,7 @@ private:
 	}
 
 	auto BindSetModalOpen(
-		dom::ElementDerived auto* element,
+		ui::LogicalElementDerived auto* element,
 		auto* property
 	) -> void
 	{
@@ -258,7 +255,7 @@ private:
 		);
 	}
 
-	auto BindEventOnClick( dom::ElementDerived auto* element ) -> void
+	auto BindEventOnClick( ui::LogicalElementDerived auto* element ) -> void
 	{
 		assert( element );
 		auto* client_updater = this->core->GetClientUpdater();
@@ -266,21 +263,21 @@ private:
 		client_updater->SetOnClick( element->id );
 	}
 
-	template<
-		dom::ElementDerived NewElementT,
-		typename ...ArgsT
-	>
-	auto AddChild(
-		ArgsT&& ...args
-	) -> NewElementT*
+	template<ui::LogicalElementDerived NewElementT>
+	auto AddChild() -> NewElementT*
 	{
 		auto* owning_parent = this->parent;
 		assert( owning_parent );
 
+		// TODO: Renderer should be invoked here to set up the element parts.
+		auto parts = std::vector<dom::ElementPart>{
+			{ "root", "div" }
+		};
+
 		auto new_element = std::make_unique<NewElementT>(
 			this->GenerateElementUUID(),
 			owning_parent,
-			std::forward<ArgsT>( args )...
+			parts
 		);
 		auto* new_element_ptr = new_element.get();
 
@@ -291,10 +288,11 @@ private:
 
 		auto* client_updater = this->core->GetClientUpdater();
 		assert( client_updater );
+		// TODO: This needs to be changed to reflect the new architecture with element parts / dom parts.
 		client_updater->CreateElement(
-			owning_parent->id,
-			new_element_ptr->id,
-			new_element_ptr->tag
+			owning_parent->GetID(),
+			new_element_ptr->GetID(),
+			new_element_ptr->GetParts()[ 0 ].tag
 		);
 
 		return new_element_ptr;
@@ -325,7 +323,7 @@ private:
 	}
 
 	auto GetParent() const noexcept -> ElementT* { return parent; }
-	auto GetRoot() const noexcept -> dom::Element* { return core->GetRootElement(); }
+	auto GetRoot() const noexcept -> ui::LogicalElement* { return core->GetRootElement(); }
 
 private:
 

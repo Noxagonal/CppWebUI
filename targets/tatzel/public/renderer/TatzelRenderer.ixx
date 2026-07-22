@@ -19,20 +19,20 @@ public:
 	auto operator=( const TatzelRenderer& ) -> TatzelRenderer& = default;
 	auto operator=( TatzelRenderer&& ) -> TatzelRenderer& = default;
 
-	auto CreateElement( dom::Element* element ) -> LogicalElement override;
-	auto CreateLabel( dom::Label* element ) -> LogicalElement override;
-	auto CreateContainer( dom::Container* element ) -> LogicalElement override;
-	auto CreateButton( dom::Button* element ) -> LogicalElement override;
-	auto CreateHeading( dom::Heading* element ) -> LogicalElement override;
-	auto CreateParagraph( dom::Paragraph* element ) -> LogicalElement override;
-	auto CreateSpan( dom::Span* element ) -> LogicalElement override;
-	auto CreateLink( dom::Link* element ) -> LogicalElement override;
-	auto CreateImage( dom::Image* element ) -> LogicalElement override;
-	auto CreateHorizontalRule( dom::HorizontalRule* element ) -> LogicalElement override;
-	auto CreateModal( dom::Modal* element ) -> LogicalElement override;
-	auto CreateCard( dom::Card* element ) -> LogicalElement override;
-	auto CreateHeader( dom::Header* element ) -> LogicalElement override;
-	auto CreateFooter( dom::Footer* element ) -> LogicalElement override;
+	auto CreateElement( ui::LogicalElement* element ) -> ui::LogicalElement* override;
+	//auto CreateLabel( ui::Label* element ) -> ui::LogicalElement override;
+	//auto CreateContainer( ui::Container* element ) -> ui::LogicalElement override;
+	//auto CreateButton( ui::Button* element ) -> ui::LogicalElement override;
+	auto CreateHeading( ui::Heading* element ) -> ui::Heading* override;
+	//auto CreateParagraph( ui::Paragraph* element ) -> ui::LogicalElement override;
+	//auto CreateSpan( ui::Span* element ) -> ui::LogicalElement override;
+	//auto CreateLink( ui::Link* element ) -> ui::LogicalElement override;
+	//auto CreateImage( ui::Image* element ) -> ui::LogicalElement override;
+	//auto CreateHorizontalRule( ui::HorizontalRule* element ) -> ui::LogicalElement override;
+	//auto CreateModal( ui::Modal* element ) -> ui::LogicalElement override;
+	//auto CreateCard( ui::Card* element ) -> ui::LogicalElement override;
+	//auto CreateHeader( ui::Header* element ) -> ui::LogicalElement override;
+	//auto CreateFooter( ui::Footer* element ) -> ui::LogicalElement override;
 };
 
 

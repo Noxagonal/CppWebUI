@@ -2,6 +2,9 @@ module;
 
 #include <type_traits>
 #include <functional>
+#include <vector>
+#include <string>
+#include <string_view>
 
 export module UI.Property;
 

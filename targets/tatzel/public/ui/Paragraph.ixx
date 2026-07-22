@@ -5,32 +5,32 @@ module;
 
 export module UI.DOM.Paragraph;
 
-export import UI.UI.Element;
+export import UI.UI.LogicalElement;
 
 import UI.Property;
 
 
 namespace tatzel::ui {
 
-
+/*
 export
-class Paragraph : public Element
+class Paragraph : public LogicalElement
 {
 public:
 
-	using Element::Element;
+	using LogicalElement::LogicalElement;
 
 	inline Paragraph(
 		std::string_view id,
-		Element* parent,
+		LogicalElement* parent,
 		std::string_view text
 	) :
-		Element{ "p", id, parent },
+		LogicalElement{ "p", id, parent },
 		text{ std::string{ text } }
 	{}
 
 	Property<std::string> text;
 };
-
+*/
 
 }

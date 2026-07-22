@@ -4,26 +4,26 @@ module;
 
 export module UI.DOM.Header;
 
-export import UI.UI.Element;
+export import UI.UI.LogicalElement;
 
 
 namespace tatzel::ui {
 
-
+/*
 export
-class Header : public Element
+class Header : public LogicalElement
 {
 public:
 
-	using Element::Element;
+	using LogicalElement::LogicalElement;
 
 	inline Header(
 		std::string_view id,
-		Element* parent
+		LogicalElement* parent
 	) :
-		Element{ "header", id, parent }
+		LogicalElement{ "header", id, parent }
 	{}
 };
-
+*/
 
 }

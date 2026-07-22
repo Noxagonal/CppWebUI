@@ -4,32 +4,32 @@ module;
 
 export module UI.DOM.Modal;
 
-export import UI.UI.Element;
+export import UI.UI.LogicalElement;
 
 import UI.Property;
 
 
 namespace tatzel::ui {
 
-
+/*
 export
-class Modal : public Element
+class Modal : public LogicalElement
 {
 public:
 
-	using Element::Element;
+	using LogicalElement::LogicalElement;
 
 	inline Modal(
 		std::string_view id,
-		Element* parent,
+		LogicalElement* parent,
 		bool open
 	) :
-		Element{ "dialog", id, parent },
+		LogicalElement{ "dialog", id, parent },
 		open{ open }
 	{}
 
 	Property<bool> open;
 };
-
+*/
 
 }
