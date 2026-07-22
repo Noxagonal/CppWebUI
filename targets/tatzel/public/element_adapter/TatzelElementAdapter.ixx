@@ -1,23 +1,23 @@
-export module UI.Renderer.TatzelRenderer;
+export module UI.ElementAdapter.TatzelElementAdapter;
 
-export import UI.Renderer.Renderer;
+export import UI.ElementAdapter.ElementAdapter;
 
 
 namespace tatzel {
 
 
 export
-class TatzelRenderer : public Renderer
+class TatzelElementAdapter : public ElementAdapter
 {
 public:
 
-	TatzelRenderer() = default;
-	TatzelRenderer( const TatzelRenderer& ) = default;
-	TatzelRenderer( TatzelRenderer&& ) = default;
-	~TatzelRenderer() override = default;
+	TatzelElementAdapter() = default;
+	TatzelElementAdapter( const TatzelElementAdapter& ) = default;
+	TatzelElementAdapter( TatzelElementAdapter&& ) = default;
+	~TatzelElementAdapter() override = default;
 
-	auto operator=( const TatzelRenderer& ) -> TatzelRenderer& = default;
-	auto operator=( TatzelRenderer&& ) -> TatzelRenderer& = default;
+	auto operator=( const TatzelElementAdapter& ) -> TatzelElementAdapter& = default;
+	auto operator=( TatzelElementAdapter&& ) -> TatzelElementAdapter& = default;
 
 	auto CreateElement( ui::LogicalElement* element ) -> ui::LogicalElement* override;
 	//auto CreateLabel( ui::Label* element ) -> ui::LogicalElement override;

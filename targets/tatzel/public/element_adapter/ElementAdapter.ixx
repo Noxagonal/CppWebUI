@@ -1,4 +1,4 @@
-export module UI.Renderer.Renderer;
+export module UI.ElementAdapter.ElementAdapter;
 
 export import UI.UI.LogicalElement;
 
@@ -22,11 +22,11 @@ namespace tatzel {
 
 
 export
-class Renderer
+class ElementAdapter
 {
 public:
 
-	virtual ~Renderer() = default;
+	virtual ~ElementAdapter() = default;
 
 	virtual auto CreateElement( ui::LogicalElement* element ) -> ui::LogicalElement* = 0;
 	//virtual auto CreateLabel( ui::Label* element ) -> ui::LogicalElement = 0;

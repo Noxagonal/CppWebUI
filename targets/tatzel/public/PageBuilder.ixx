@@ -269,7 +269,7 @@ private:
 		auto* owning_parent = this->parent;
 		assert( owning_parent );
 
-		// TODO: Renderer should be invoked here to set up the element parts.
+		// TODO: ElementAdapter should be invoked here to set up the element parts.
 		auto parts = std::vector<dom::ElementPart>{
 			{ "root", "div" }
 		};
